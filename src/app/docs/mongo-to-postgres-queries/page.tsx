@@ -35,7 +35,6 @@ export default function MongoToPostgresQueries() {
           __html: `<span class="c">-- Sequence counter for atomic ID generation</span>
 <span class="k">CREATE TABLE</span> counters (
     key_name <span class="k">TEXT PRIMARY KEY</span>,
-    mongo_id <span class="k">TEXT</span>,
     sequence_value <span class="k">BIGINT NOT NULL</span> <span class="k">DEFAULT</span> <span class="n">0</span>
 );
 
@@ -58,7 +57,6 @@ export default function MongoToPostgresQueries() {
         <div className="code-container query" dangerouslySetInnerHTML={{
           __html: `<span class="k">CREATE TABLE</span> sets (
     set_id <span class="k">INTEGER PRIMARY KEY</span>,
-    mongo_id <span class="k">TEXT UNIQUE</span>,
     user_id <span class="k">INTEGER NOT NULL</span>,
     title <span class="k">TEXT NOT NULL</span>,
     description <span class="k">TEXT</span>,
@@ -74,14 +72,11 @@ export default function MongoToPostgresQueries() {
     back_lang <span class="k">TEXT</span>,
     hint_lang <span class="k">TEXT</span>,
     is_noindex <span class="k">BOOLEAN DEFAULT FALSE</span>,
+    spam_flag <span class="k">TEXT</span>,
     created_at <span class="k">TIMESTAMP WITH TIME ZONE NOT NULL</span>,
     updated_at <span class="k">TIMESTAMP WITH TIME ZONE NOT NULL</span>,
     meta_username <span class="k">TEXT</span>,
-    legacy_card_set_id <span class="k">INTEGER</span>,
-    legacy_favorite_count <span class="k">INTEGER</span>,
-    legacy_is_private <span class="k">BOOLEAN</span>,
-    legacy_is_trash <span class="k">BOOLEAN</span>,
-    legacy_card_list_str <span class="k">TEXT</span>
+    legacy_favorite_id <span class="k">INTEGER</span>
 );`
         }} />
       </div>
@@ -132,10 +127,6 @@ export default function MongoToPostgresQueries() {
     meta_img_front_provider <span class="k">TEXT</span>,
     meta_img_front_s3_at <span class="k">TIMESTAMP WITH TIME ZONE</span>,
     meta_images_json <span class="k">JSONB</span>,
-    note_hints <span class="k">TEXT[]</span>,
-    legacy_flip <span class="k">BOOLEAN</span>,
-    legacy_image_audit <span class="k">BOOLEAN</span>,
-    legacy_q_media_type_id <span class="k">INTEGER</span>,
     created_at <span class="k">TIMESTAMP WITH TIME ZONE</span>,
     updated_at <span class="k">TIMESTAMP WITH TIME ZONE</span>,
     <span class="k">FOREIGN KEY</span> (set_id) <span class="k">REFERENCES</span> sets(set_id) <span class="k">ON DELETE CASCADE</span>
@@ -158,72 +149,11 @@ export default function MongoToPostgresQueries() {
         }} />
       </div>
 
-      <h2>Phase 3: History & Audit Tables</h2>
+      <h2>Phase 3: Folders & Collections</h2>
 
       <div className="query-section">
         <div className="query-header">
-          <span>4. Create Table: <code>set_history</code></span>
-          <span className="badge badge-primary">Audit Trail</span>
-        </div>
-        <div className="query-description">
-          Capped collection replica storing snapshots of set changes. Data from `fc_set_history_capped`.
-        </div>
-        <div className="code-container query" dangerouslySetInnerHTML={{
-          __html: `<span class="k">CREATE TABLE</span> set_history (
-    revision_id <span class="k">BIGINT PRIMARY KEY</span>,
-    set_id <span class="k">INTEGER NOT NULL</span>,
-    mongo_id <span class="k">TEXT</span>,
-    title_snapshot <span class="k">TEXT</span>,
-    modified_by_user_id <span class="k">INTEGER</span>,
-    has_image <span class="k">BOOLEAN DEFAULT FALSE</span>,
-    spam_flag <span class="k">TEXT</span>,
-    description_snapshot <span class="k">TEXT</span>,
-    front_lang_snapshot <span class="k">TEXT</span>,
-    created_at <span class="k">TIMESTAMP WITH TIME ZONE NOT NULL</span>,
-    <span class="k">FOREIGN KEY</span> (set_id) <span class="k">REFERENCES</span> sets(set_id) <span class="k">ON DELETE CASCADE</span>
-);`
-        }} />
-      </div>
-
-      <div className="query-section">
-        <div className="query-header">
-          <span>4a. Indices for <code>set_history</code> Table</span>
-          <span className="badge badge-index">Performance</span>
-        </div>
-        <div className="code-container query" dangerouslySetInnerHTML={{
-          __html: `<span class="c">-- Query optimization for history lookups</span>
-<span class="k">CREATE INDEX</span> idx_set_history_set_id <span class="k">ON</span> set_history(set_id);
-<span class="k">CREATE INDEX</span> idx_set_history_user_id <span class="k">ON</span> set_history(modified_by_user_id);
-<span class="k">CREATE INDEX</span> idx_set_history_created_at <span class="k">ON</span> set_history(created_at DESC);`
-        }} />
-      </div>
-
-      <div className="query-section">
-        <div className="query-header">
-          <span>5. Create Table: <code>history_cards</code></span>
-          <span className="badge badge-fk">Normalized from Array</span>
-        </div>
-        <div className="query-description">
-          Historical snapshots of cards at specific revisions. Links to set_history via revision_id.
-        </div>
-        <div className="code-container query" dangerouslySetInnerHTML={{
-          __html: `<span class="k">CREATE TABLE</span> history_cards (
-    revision_id <span class="k">BIGINT NOT NULL</span>,
-    card_id <span class="k">INTEGER NOT NULL</span>,
-    front_text <span class="k">TEXT</span>,
-    back_text <span class="k">TEXT</span>,
-    front_html <span class="k">TEXT</span>,
-    <span class="k">PRIMARY KEY</span> (revision_id, card_id),
-    <span class="k">FOREIGN KEY</span> (revision_id) <span class="k">REFERENCES</span> set_history(revision_id) <span class="k">ON DELETE CASCADE</span>
-);`
-        }} />
-      </div>
-
-      <h2>Phase 4: Folders & Collections</h2>
-
-      <div className="query-section">
-        <div className="query-header">
-          <span>6. Create Table: <code>folders</code></span>
+          <span>4. Create Table: <code>folders</code></span>
           <span className="badge badge-primary">Collection Management</span>
         </div>
         <div className="query-description">
@@ -232,7 +162,6 @@ export default function MongoToPostgresQueries() {
         <div className="code-container query" dangerouslySetInnerHTML={{
           __html: `<span class="k">CREATE TABLE</span> folders (
     folder_id <span class="k">INTEGER PRIMARY KEY</span>,
-    mongo_id <span class="k">TEXT UNIQUE</span>,
     user_id <span class="k">INTEGER NOT NULL</span>,
     title <span class="k">TEXT NOT NULL</span>,
     description <span class="k">TEXT</span>,
@@ -312,65 +241,13 @@ export default function MongoToPostgresQueries() {
           __html: `<span class="k">CREATE TABLE</span> set_directory (
     set_id <span class="k">INTEGER NOT NULL</span>,
     directory_id <span class="k">INTEGER NOT NULL</span>,
-    mongo_id <span class="k">TEXT</span>,
     <span class="k">PRIMARY KEY</span> (set_id, directory_id),
     <span class="k">FOREIGN KEY</span> (set_id) <span class="k">REFERENCES</span> sets(set_id) <span class="k">ON DELETE CASCADE</span>
 );`
         }} />
       </div>
 
-      <div className="query-section">
-        <div className="query-header">
-          <span>9. Create Table: <code>set_indexed</code></span>
-          <span className="badge badge-primary">Search Index</span>
-        </div>
-        <div className="query-description">
-          Index table for sets that are searchable and discoverable.
-        </div>
-        <div className="code-container query" dangerouslySetInnerHTML={{
-          __html: `<span class="k">CREATE TABLE</span> set_indexed (
-    set_id <span class="k">INTEGER PRIMARY KEY</span>,
-    mongo_id <span class="k">TEXT</span>,
-    <span class="k">FOREIGN KEY</span> (set_id) <span class="k">REFERENCES</span> sets(set_id) <span class="k">ON DELETE CASCADE</span>
-);`
-        }} />
-      </div>
-
-      <h2>Phase 6: Logging & Audit Tables</h2>
-
-      <div className="query-section">
-        <div className="query-header">
-          <span>10. Create Table: <code>spam_log</code></span>
-          <span className="badge badge-primary">Audit Log</span>
-        </div>
-        <div className="query-description">
-          Audit trail for spam detection and content moderation.
-        </div>
-        <div className="code-container query" dangerouslySetInnerHTML={{
-          __html: `<span class="k">CREATE TABLE</span> spam_log (
-    log_id <span class="k">SERIAL PRIMARY KEY</span>,
-    mongo_id <span class="k">TEXT</span>,
-    user_id <span class="k">INTEGER</span>,
-    set_id <span class="k">INTEGER</span>,
-    <span class="k">FOREIGN KEY</span> (set_id) <span class="k">REFERENCES</span> sets(set_id) <span class="k">ON DELETE SET NULL</span>
-);`
-        }} />
-      </div>
-
-      <div className="query-section">
-        <div className="query-header">
-          <span>10a. Indices for <code>spam_log</code> Table</span>
-          <span className="badge badge-index">Performance</span>
-        </div>
-        <div className="code-container query" dangerouslySetInnerHTML={{
-          __html: `<span class="c">-- Audit and search columns</span>
-<span class="k">CREATE INDEX</span> idx_spam_log_user_id <span class="k">ON</span> spam_log(user_id);
-<span class="k">CREATE INDEX</span> idx_spam_log_set_id <span class="k">ON</span> spam_log(set_id);
-<span class="k">CREATE INDEX</span> idx_spam_log_log_id <span class="k">ON</span> spam_log(log_id DESC);`
-        }} />
-      </div>
-
-      <h2>Phase 7: Constraints & Composite Indices</h2>
+      <h2>Phase 4: Constraints & Composite Indices</h2>
 
       <div className="query-section">
         <div className="query-header">
@@ -388,10 +265,7 @@ export default function MongoToPostgresQueries() {
 <span class="k">CREATE INDEX</span> idx_cards_study_order <span class="k">ON</span> cards(set_id, position ASC, created_at ASC);
 
 <span class="c">-- Folders: User collections and browsing</span>
-<span class="k">CREATE INDEX</span> idx_folders_user_collections <span class="k">ON</span> folders(user_id, updated_at DESC, item_count DESC);
-
-<span class="c">-- History: Audit trails and recovery</span>
-<span class="k">CREATE INDEX</span> idx_set_history_audit <span class="k">ON</span> set_history(set_id, created_at DESC, revision_id DESC);`
+<span class="k">CREATE INDEX</span> idx_folders_user_collections <span class="k">ON</span> folders(user_id, updated_at DESC, item_count DESC);`
         }} />
       </div>
 
@@ -427,44 +301,14 @@ export default function MongoToPostgresQueries() {
             <td>Promoted from MongoDB</td>
           </tr>
           <tr>
-            <td>set_history</td>
-            <td>revision_id</td>
-            <td>BIGINT</td>
-            <td>Timestamp-based revision</td>
-          </tr>
-          <tr>
-            <td>history_cards</td>
-            <td>history_card_id</td>
-            <td>SERIAL</td>
-            <td>Auto-generated</td>
-          </tr>
-          <tr>
             <td>folders</td>
             <td>folder_id</td>
             <td>INTEGER</td>
             <td>Promoted from MongoDB</td>
           </tr>
           <tr>
-            <td>folder_items</td>
-            <td>folder_item_id</td>
-            <td>SERIAL</td>
-            <td>Auto-generated</td>
-          </tr>
-          <tr>
             <td>set_directory</td>
             <td>directory_item_id</td>
-            <td>SERIAL</td>
-            <td>Auto-generated</td>
-          </tr>
-          <tr>
-            <td>set_indexed</td>
-            <td>indexed_item_id</td>
-            <td>SERIAL</td>
-            <td>Auto-generated</td>
-          </tr>
-          <tr>
-            <td>spam_log</td>
-            <td>log_id</td>
             <td>SERIAL</td>
             <td>Auto-generated</td>
           </tr>
@@ -489,18 +333,6 @@ export default function MongoToPostgresQueries() {
             <td>ON DELETE CASCADE</td>
           </tr>
           <tr>
-            <td>set_history</td>
-            <td>set_id</td>
-            <td>sets(set_id)</td>
-            <td>ON DELETE CASCADE</td>
-          </tr>
-          <tr>
-            <td>history_cards</td>
-            <td>revision_id</td>
-            <td>set_history(revision_id)</td>
-            <td>ON DELETE CASCADE</td>
-          </tr>
-          <tr>
             <td>folder_items</td>
             <td>folder_id</td>
             <td>folders(folder_id)</td>
@@ -508,18 +340,6 @@ export default function MongoToPostgresQueries() {
           </tr>
           <tr>
             <td>set_directory</td>
-            <td>set_id</td>
-            <td>sets(set_id)</td>
-            <td>ON DELETE CASCADE</td>
-          </tr>
-          <tr>
-            <td>set_indexed</td>
-            <td>set_id</td>
-            <td>sets(set_id)</td>
-            <td>ON DELETE CASCADE</td>
-          </tr>
-          <tr>
-            <td>spam_log</td>
             <td>set_id</td>
             <td>sets(set_id)</td>
             <td>ON DELETE CASCADE</td>
@@ -540,27 +360,21 @@ export default function MongoToPostgresQueries() {
         <tbody>
           <tr>
             <td>Single-Column Indices</td>
-            <td>24</td>
+            <td>20</td>
             <td>BTREE</td>
             <td>Foreign keys, common filters</td>
           </tr>
           <tr>
             <td>Unique Indices</td>
-            <td>6</td>
+            <td>1</td>
             <td>BTREE</td>
-            <td>Prevent duplicates</td>
+            <td>counters.key_name</td>
           </tr>
           <tr>
             <td>Composite Indices</td>
-            <td>5</td>
+            <td>4</td>
             <td>BTREE</td>
             <td>Complex query patterns</td>
-          </tr>
-          <tr>
-            <td>GIN Indices (Text)</td>
-            <td>5</td>
-            <td>GIN</td>
-            <td>Full-text search</td>
           </tr>
           <tr>
             <td>Partial Indices</td>
@@ -570,9 +384,9 @@ export default function MongoToPostgresQueries() {
           </tr>
           <tr>
             <td><strong>Total Indices</strong></td>
-            <td><strong>41</strong></td>
+            <td><strong>26</strong></td>
             <td>-</td>
-            <td>Comprehensive coverage</td>
+            <td>Optimized for active tables</td>
           </tr>
         </tbody>
       </table>

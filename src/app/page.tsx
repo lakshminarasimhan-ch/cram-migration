@@ -5,7 +5,6 @@ export default function Home() {
       source: 'fc_set',
       rows: [
         { mongo: 'set_id.value', pg: 'set_id', type: 'INTEGER', notes: 'PRIMARY KEY.' },
-        { mongo: '_id', pg: 'mongo_id', type: 'TEXT', notes: 'Legacy ObjectId Audit.' },
         { mongo: 'user_id.value', pg: 'user_id', type: 'INTEGER', notes: 'Owner ID.' },
         { mongo: 'title', pg: 'title', type: 'TEXT', notes: '' },
         { mongo: 'description', pg: 'description', type: 'TEXT', notes: '' },
@@ -15,20 +14,17 @@ export default function Home() {
         { mongo: 'has_image', pg: 'has_image', type: 'BOOLEAN', notes: '' },
         { mongo: 'count_cards.value', pg: 'card_count', type: 'INTEGER', notes: '' },
         { mongo: 'views.value', pg: 'view_count', type: 'INTEGER', notes: '' },
-        { mongo: 'rankSum.value', pg: 'rank_sum', type: 'INTEGER', notes: '' },
-        { mongo: 'rankCount.value', pg: 'rank_count', type: 'INTEGER', notes: '' },
+        { mongo: 'rankSum.value', pg: 'rank_sum', type: 'INTEGER', notes: 'Used for rating calculation.' },
+        { mongo: 'rankCount.value', pg: 'rank_count', type: 'INTEGER', notes: 'Used for rating calculation.' },
         { mongo: 'lang_front', pg: 'front_lang', type: 'TEXT', notes: 'ISO Code.' },
         { mongo: 'lang_back', pg: 'back_lang', type: 'TEXT', notes: 'ISO Code.' },
         { mongo: 'lang_hint', pg: 'hint_lang', type: 'TEXT', notes: 'ISO Code (Nullable).' },
-        { mongo: 'noindex', pg: 'is_noindex', type: 'BOOLEAN', notes: '' },
+        { mongo: 'noindex', pg: 'is_noindex', type: 'BOOLEAN', notes: 'SEO control.' },
+        { mongo: 'spam', pg: 'spam_flag', type: 'TEXT', notes: 'Content moderation flag.' },
         { mongo: 'created', pg: 'created_at', type: 'TIMESTAMP', notes: '' },
         { mongo: 'last_modified', pg: 'updated_at', type: 'TIMESTAMP', notes: '' },
         { mongo: 'meta.username', pg: 'meta_username', type: 'TEXT', notes: '' },
-        { mongo: 'meta.legacyFlashexData.card_set_id.value', pg: 'legacy_card_set_id', type: 'INTEGER', notes: 'Deep legacy ref.' },
-        { mongo: 'meta.legacyFlashexData.favorite_count.value', pg: 'legacy_favorite_count', type: 'INTEGER', notes: '' },
-        { mongo: 'meta.legacyFlashexData.private', pg: 'legacy_is_private', type: 'BOOLEAN', notes: '' },
-        { mongo: 'meta.legacyFlashexData.trash', pg: 'legacy_is_trash', type: 'BOOLEAN', notes: '' },
-        { mongo: 'meta.legacyFlashexData.card_list', pg: 'legacy_card_list_str', type: 'TEXT', notes: 'Raw string list.' },
+        { mongo: 'meta.legacyFlashexData.favorite_id.value', pg: 'legacy_favorite_id', type: 'INTEGER', notes: 'Legacy favorites redirect.' },
       ]
     },
     {
@@ -54,39 +50,8 @@ export default function Home() {
         { mongo: 'cards[].meta.images.front.provider', pg: 'meta_img_front_provider', type: 'TEXT', notes: '' },
         { mongo: 'cards[].meta.images.front.s3_upload.low', pg: 'meta_img_front_s3_at', type: 'TIMESTAMP', notes: 'Flattened low/high.' },
         { mongo: 'cards[].meta.images', pg: 'meta_images_json', type: 'JSONB', notes: 'Full fallback.' },
-        { mongo: 'cards[].meta.note_hint', pg: 'note_hints', type: 'TEXT[]', notes: '' },
-        { mongo: 'cards[].meta.legacyFlashexData.flip', pg: 'legacy_flip', type: 'BOOLEAN', notes: '' },
-        { mongo: 'cards[].meta.legacyFlashexData.image_audit', pg: 'legacy_image_audit', type: 'BOOLEAN', notes: '' },
-        { mongo: 'cards[].meta.legacyFlashexData.question_media_type_id.value', pg: 'legacy_q_media_type_id', type: 'INTEGER', notes: '' },
         { mongo: 'cards[].created', pg: 'created_at', type: 'TIMESTAMP', notes: '' },
         { mongo: 'cards[].last_modified', pg: 'updated_at', type: 'TIMESTAMP', notes: '' },
-      ]
-    },
-    {
-      name: 'set_history',
-      source: 'fc_set_history_capped',
-      rows: [
-        { mongo: 'revision', pg: 'revision_id', type: 'BIGINT', notes: 'PRIMARY KEY.' },
-        { mongo: 'set_id.value', pg: 'set_id', type: 'INTEGER', notes: 'FOREIGN KEY.' },
-        { mongo: '_id', pg: 'mongo_id', type: 'TEXT', notes: 'Legacy ObjectId.' },
-        { mongo: 'title', pg: 'title_snapshot', type: 'TEXT', notes: '' },
-        { mongo: 'user_id.value', pg: 'modified_by_user_id', type: 'INTEGER', notes: '' },
-        { mongo: 'has_image.value', pg: 'has_image', type: 'BOOLEAN', notes: 'Cast 0/1 to Boolean.' },
-        { mongo: 'spam', pg: 'spam_flag', type: 'TEXT', notes: '' },
-        { mongo: 'description', pg: 'description_snapshot', type: 'TEXT', notes: '' },
-        { mongo: 'lang_front', pg: 'front_lang_snapshot', type: 'TEXT', notes: '' },
-        { mongo: 'created', pg: 'created_at', type: 'TIMESTAMP', notes: '' },
-      ]
-    },
-    {
-      name: 'history_cards',
-      source: 'fc_set_history_capped.cards[]',
-      rows: [
-        { mongo: '(link)', pg: 'revision_id', type: 'BIGINT', notes: 'FK to set_history.' },
-        { mongo: 'cards[].card_id.value', pg: 'card_id', type: 'INTEGER', notes: 'Snapshot.' },
-        { mongo: 'cards[].front', pg: 'front_text', type: 'TEXT', notes: 'Snapshot.' },
-        { mongo: 'cards[].back', pg: 'back_text', type: 'TEXT', notes: 'Snapshot.' },
-        { mongo: 'cards[].front_html', pg: 'front_html', type: 'TEXT', notes: 'Snapshot.' },
       ]
     },
     {
@@ -94,7 +59,6 @@ export default function Home() {
       source: 'fc_folders',
       rows: [
         { mongo: 'folder_id.value', pg: 'folder_id', type: 'INTEGER', notes: 'PRIMARY KEY.' },
-        { mongo: '_id', pg: 'mongo_id', type: 'TEXT', notes: 'Legacy ObjectId.' },
         { mongo: 'user_id.value', pg: 'user_id', type: 'INTEGER', notes: '' },
         { mongo: 'title', pg: 'title', type: 'TEXT', notes: '' },
         { mongo: 'description', pg: 'description', type: 'TEXT', notes: '' },
@@ -127,7 +91,6 @@ export default function Home() {
       title: 'Table: counters',
       rows: [
         { mongo: 'key', pg: 'key_name', type: 'TEXT', notes: 'PRIMARY KEY.' },
-        { mongo: '_id', pg: 'mongo_id', type: 'TEXT', notes: '' },
         { mongo: 'value.value', pg: 'sequence_value', type: 'BIGINT', notes: 'Flattened high/low.' },
       ]
     },
@@ -136,29 +99,12 @@ export default function Home() {
       rows: [
         { mongo: 'set_id.value', pg: 'set_id', type: 'INTEGER', notes: 'FK to sets.set_id.' },
         { mongo: 'dir.value', pg: 'directory_id', type: 'INTEGER', notes: '' },
-        { mongo: '_id', pg: 'mongo_id', type: 'TEXT', notes: '' },
-      ]
-    },
-    {
-      title: 'Table: set_indexed',
-      rows: [
-        { mongo: 'set_id.value', pg: 'set_id', type: 'INTEGER', notes: 'FK to sets.set_id.' },
-        { mongo: '_id', pg: 'mongo_id', type: 'TEXT', notes: '' },
-      ]
-    },
-    {
-      title: 'Table: spam_log',
-      rows: [
-        { mongo: '(generated)', pg: 'log_id', type: 'SERIAL', notes: 'PG Primary Key.' },
-        { mongo: '_id', pg: 'mongo_id', type: 'TEXT', notes: '' },
-        { mongo: 'user_id.value', pg: 'user_id', type: 'INTEGER', notes: '' },
-        { mongo: 'set_id.value', pg: 'set_id', type: 'INTEGER', notes: 'FK to sets.set_id.' },
       ]
     },
   ];
 
   const getBadgeClass = (type: string) => {
-    switch(type) {
+    switch (type) {
       case 'INTEGER': return 't-int';
       case 'TEXT': return 't-text';
       case 'BOOLEAN': return 't-bool';
@@ -177,7 +123,7 @@ export default function Home() {
 
       <div className="opt-note">
         <strong>Engineering Directives:</strong>
-        <ul style={{margin: '5px 0 0 0', paddingLeft: '20px'}}>
+        <ul style={{ margin: '5px 0 0 0', paddingLeft: '20px' }}>
           <li><strong>Identity:</strong> Integer <code>set_id</code>, <code>card_id</code>, <code>folder_id</code> are promoted to <strong>Primary Keys</strong>. Legacy <code>_id</code> is preserved as <code>mongo_id</code> (TEXT).</li>
           <li><strong>Normalization:</strong> Nested arrays (`cards`, `items`) are normalized to child tables (`cards`, `folder_items`).</li>
           <li><strong>Complex Objects:</strong> Legacy metadata (`legacyFlashexData`) and Image metadata (`meta.images`) are flattened where common, or stored as JSONB where sparse.</li>
@@ -186,7 +132,7 @@ export default function Home() {
       </div>
 
       <h2>1. Table: <code>sets</code></h2>
-      <p style={{fontSize:'13px', color:'#666', marginBottom:'10px'}}>Source: <code>fc_set</code></p>
+      <p style={{ fontSize: '13px', color: '#666', marginBottom: '10px' }}>Source: <code>fc_set</code></p>
       <table>
         <thead>
           <tr>
@@ -209,7 +155,7 @@ export default function Home() {
       </table>
 
       <h2>2. Table: <code>cards</code></h2>
-      <p style={{fontSize:'13px', color:'#666', marginBottom:'10px'}}>Source: <code>fc_set.cards[]</code></p>
+      <p style={{ fontSize: '13px', color: '#666', marginBottom: '10px' }}>Source: <code>fc_set.cards[]</code></p>
       <table>
         <thead>
           <tr>
@@ -231,8 +177,8 @@ export default function Home() {
         </tbody>
       </table>
 
-      <h2>3. Table: <code>set_history</code></h2>
-      <p style={{fontSize:'13px', color:'#666', marginBottom:'10px'}}>Source: <code>fc_set_history_capped</code></p>
+      <h2>3. Table: <code>folders</code></h2>
+      <p style={{ fontSize: '13px', color: '#666', marginBottom: '10px' }}>Source: <code>fc_folders</code></p>
       <table>
         <thead>
           <tr>
@@ -254,8 +200,8 @@ export default function Home() {
         </tbody>
       </table>
 
-      <h2>4. Table: <code>history_cards</code></h2>
-      <p style={{fontSize:'13px', color:'#666', marginBottom:'10px'}}>Source: <code>fc_set_history_capped.cards[]</code></p>
+      <h2>4. Table: <code>folder_items</code></h2>
+      <p style={{ fontSize: '13px', color: '#666', marginBottom: '10px' }}>Source: <code>fc_folders.items[]</code></p>
       <table>
         <thead>
           <tr>
@@ -277,53 +223,7 @@ export default function Home() {
         </tbody>
       </table>
 
-      <h2>5. Table: <code>folders</code></h2>
-      <p style={{fontSize:'13px', color:'#666', marginBottom:'10px'}}>Source: <code>fc_folders</code></p>
-      <table>
-        <thead>
-          <tr>
-            <th className="col-mongo">Mongo Path</th>
-            <th className="col-pg">Postgres Column</th>
-            <th className="col-type">Type</th>
-            <th className="col-notes">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tables[4].rows.map((row, idx) => (
-            <tr key={idx}>
-              <td><span className="mongo-path">{row.mongo}</span></td>
-              <td><span className="pg-col">{row.pg}</span></td>
-              <td><span className={`badge ${getBadgeClass(row.type)}`}>{row.type}</span></td>
-              <td>{row.notes}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2>6. Table: <code>folder_items</code></h2>
-      <p style={{fontSize:'13px', color:'#666', marginBottom:'10px'}}>Source: <code>fc_folders.items[]</code></p>
-      <table>
-        <thead>
-          <tr>
-            <th className="col-mongo">Mongo Path</th>
-            <th className="col-pg">Postgres Column</th>
-            <th className="col-type">Type</th>
-            <th className="col-notes">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tables[5].rows.map((row, idx) => (
-            <tr key={idx}>
-              <td><span className="mongo-path">{row.mongo}</span></td>
-              <td><span className="pg-col">{row.pg}</span></td>
-              <td><span className={`badge ${getBadgeClass(row.type)}`}>{row.type}</span></td>
-              <td>{row.notes}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2>7. System Tables</h2>
+      <h2>5. System Tables</h2>
 
       {systemTables.map((table, tableIdx) => (
         <div key={tableIdx}>
@@ -351,8 +251,127 @@ export default function Home() {
         </div>
       ))}
 
+      <h1 className="source-header">Excluded from Migration</h1>
+      <div className="opt-note" style={{ borderColor: '#ff6b6b', background: '#fff5f5' }}>
+        <strong>The following MongoDB collections and keys are NOT migrated to PostgreSQL:</strong>
+        <p style={{ margin: '10px 0 5px 0' }}>Based on codebase analysis, these elements are either unused, write-only, or have been replaced by other systems.</p>
+      </div>
+
+      <h2>Excluded Collections</h2>
+      <table>
+        <thead>
+          <tr>
+            <th className="col-mongo">MongoDB Collection</th>
+            <th className="col-notes">Reason for Exclusion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>fc_set_history_capped</code></td>
+            <td>Write-only backup collection. No active reads in application. Used only for revision snapshots.</td>
+          </tr>
+          <tr>
+            <td><code>fc_set_history</code></td>
+            <td>Empty/unused collection. Only <code>fc_set_history_capped</code> is referenced.</td>
+          </tr>
+          <tr>
+            <td><code>fc_spam_log</code></td>
+            <td>No references found in active application code.</td>
+          </tr>
+          <tr>
+            <td><code>fc_set_indexed</code></td>
+            <td>No references found in active application code. Search moved to different system.</td>
+          </tr>
+          <tr>
+            <td><code>fc_set_indexed_2</code></td>
+            <td>No references found in active application code. Search moved to different system.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Excluded Keys (All Collections)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th className="col-mongo">MongoDB Key Path</th>
+            <th className="col-notes">Reason for Exclusion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>_id</code></td>
+            <td>MongoDB ObjectId. Redundant - we use unique integer IDs (<code>set_id</code>, <code>card_id</code>, <code>folder_id</code>) as primary keys in PostgreSQL.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Excluded Keys from <code>fc_set</code></h2>
+      <table>
+        <thead>
+          <tr>
+            <th className="col-mongo">MongoDB Key Path</th>
+            <th className="col-notes">Reason for Exclusion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>meta.legacyFlashexData.card_set_id</code></td>
+            <td>Legacy migration artifact. No active usage found.</td>
+          </tr>
+          <tr>
+            <td><code>meta.legacyFlashexData.favorite_count</code></td>
+            <td>Legacy migration artifact. No active usage found.</td>
+          </tr>
+          <tr>
+            <td><code>meta.legacyFlashexData.private</code></td>
+            <td>Legacy migration artifact. No active usage found.</td>
+          </tr>
+          <tr>
+            <td><code>meta.legacyFlashexData.trash</code></td>
+            <td>Legacy migration artifact. No active usage found.</td>
+          </tr>
+          <tr>
+            <td><code>meta.legacyFlashexData.card_list</code></td>
+            <td>Legacy migration artifact. No active usage found.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Excluded Keys from <code>fc_set.cards[]</code></h2>
+      <table>
+        <thead>
+          <tr>
+            <th className="col-mongo">MongoDB Key Path</th>
+            <th className="col-notes">Reason for Exclusion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>cards[].meta.note_hint</code></td>
+            <td>Legacy field. No active usage found.</td>
+          </tr>
+          <tr>
+            <td><code>cards[].meta.legacyFlashexData.flip</code></td>
+            <td>Legacy migration artifact. No active usage found.</td>
+          </tr>
+          <tr>
+            <td><code>cards[].meta.legacyFlashexData.image_audit</code></td>
+            <td>Legacy migration artifact. No active usage found.</td>
+          </tr>
+          <tr>
+            <td><code>cards[].meta.legacyFlashexData.question_media_type_id</code></td>
+            <td>Legacy migration artifact. No active usage found.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div className="opt-note" style={{ marginTop: '20px', borderColor: '#4dabf7', background: '#f0f9ff' }}>
+        <strong>Note:</strong> The only legacy field that IS migrated is <code>meta.legacyFlashexData.favorite_id</code>,
+        which is actively used in <code>FlashcardsController::_getLegacyFlashexSet()</code> for legacy favorites redirection.
+      </div>
+
       <h1 className="source-header">Appendix: Source Data Reference</h1>
-      <p className="opt-note" style={{marginTop: '0', borderColor: '#ccc', background: '#f9fafb', color: '#444'}}>
+      <p style={{ marginTop: '0', borderColor: '#ccc', background: '#f9fafb', color: '#444' }}>
         The following sections provide the <strong>exact raw JSON content</strong> for verification purposes. Use horizontal scrolling to view full deep-nested objects.
       </p>
 
