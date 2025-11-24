@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import FlashcardsTableUsageModal from '../../../components/FlashcardsTableUsageModal'
 
 export const metadata: Metadata = {
   title: 'MySQL to PostgreSQL Schema Mapping',
@@ -20,7 +21,7 @@ export default function MySQLToPostgresSchemaMapping() {
   ];
 
   const tables = [
-{
+    {
       number: 1,
       name: 'api_access_logs',
       mysqlName: 'fc_api_access_logs',
@@ -37,7 +38,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_date', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 2,
       name: 'api_client',
       mysqlName: 'fc_api_client',
@@ -50,7 +51,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 3,
       name: 'api_client_map_user',
       mysqlName: 'fc_api_client_map_user',
@@ -60,7 +61,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 4,
       name: 'api_v1_nonce',
       mysqlName: 'fc_api_v1_nonce',
@@ -70,7 +71,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 5,
       name: 'api_v1_vendor',
       mysqlName: 'fc_api_v1_vendor',
@@ -81,7 +82,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 6,
       name: 'api_v1_request',
       mysqlName: 'fc_api_v1_request',
@@ -97,7 +98,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'processed_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 7,
       name: 'categories',
       mysqlName: 'fc_categories',
@@ -110,7 +111,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'count', type: 'INTEGER', mysql: 'int', notes: '' },
       ]
     },
-{
+    {
       number: 8,
       name: 'essay_link_support',
       mysqlName: 'fc_essay_link_support',
@@ -125,7 +126,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'anchor3', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
       ]
     },
-{
+    {
       number: 9,
       name: 'image',
       mysqlName: 'fc_image',
@@ -143,7 +144,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 10,
       name: 'jewel_score_totals',
       mysqlName: 'fc_jewel_score_totals',
@@ -155,7 +156,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 11,
       name: 'jewel_scores',
       mysqlName: 'fc_jewel_scores',
@@ -168,7 +169,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 12,
       name: 'payment_subscriptions',
       mysqlName: 'fc_payment_subscriptions',
@@ -190,7 +191,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 13,
       name: 'payment_transaction_log',
       mysqlName: 'fc_payment_transaction_log',
@@ -206,7 +207,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 14,
       name: 'reports',
       mysqlName: 'fc_reports',
@@ -222,7 +223,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'resolved_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 15,
       name: 'stellarspeller_score_totals',
       mysqlName: 'fc_stellarspeller_score_totals',
@@ -234,7 +235,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 16,
       name: 'stellarspeller_scores',
       mysqlName: 'fc_stellarspeller_scores',
@@ -248,7 +249,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 17,
       name: 'takedowns',
       mysqlName: 'fc_takedowns',
@@ -264,7 +265,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'resolved_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 18,
       name: 'user_email_notifications',
       mysqlName: 'fc_user_email_notifications',
@@ -277,7 +278,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 19,
       name: 'user_social',
       mysqlName: 'fc_user_social',
@@ -290,7 +291,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 20,
       name: 'users',
       mysqlName: 'fc_users',
@@ -314,7 +315,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 21,
       name: 'translations',
       mysqlName: 'translations',
@@ -328,7 +329,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 22,
       name: 'user_cancellation_reason_log',
       mysqlName: 'user_cancellation_reason_log',
@@ -340,7 +341,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 23,
       name: 'user_subscriptions',
       mysqlName: 'user_subscriptions',
@@ -356,7 +357,7 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
     },
-{
+    {
       number: 24,
       name: 'users_nta',
       mysqlName: 'users_nta',
@@ -377,8 +378,8 @@ export default function MySQLToPostgresSchemaMapping() {
     if (type === 'BOOLEAN') return 't-bool';
     if (type === 'TIMESTAMP') return 't-ts';
     if (type === 'JSONB') return 't-json';
-    if (['http_method', 'client_status', 'client_type', 'map_status', 'token_type', 
-         'img_ext', 'img_access', 'sub_status', 'report_status', 'user_status'].includes(type)) {
+    if (['http_method', 'client_status', 'client_type', 'map_status', 'token_type',
+      'img_ext', 'img_access', 'sub_status', 'report_status', 'user_status'].includes(type)) {
       return 't-enum';
     }
     return 't-text';
@@ -387,6 +388,10 @@ export default function MySQLToPostgresSchemaMapping() {
   return (
     <main>
       <h1>MySQL → PostgreSQL: Schema Mapping</h1>
+
+      <div className="mb-6" style={{ marginBottom: '20px' }}>
+        <FlashcardsTableUsageModal />
+      </div>
 
       <div className="enum-section">
         <div className="enum-title">PostgreSQL Enum Types (Derived from MySQL definitions)</div>
@@ -422,7 +427,7 @@ export default function MySQLToPostgresSchemaMapping() {
           </table>
         </div>
       ))}
-    
+
       <h1 className="source-header">Excluded from Migration</h1>
       <div className="opt-note" style={{ borderColor: '#ff6b6b', background: '#fff5f5' }}>
         <strong>The following MySQL tables are NOT migrated to PostgreSQL:</strong>

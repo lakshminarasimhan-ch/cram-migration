@@ -142,7 +142,7 @@ export default function MySQLToPostgresMigration() {
         }} />
       </div>
 
-            <div className="query-section">
+      <div className="query-section">
         <div className="query-header">
           <span>Table: api_v1_nonce</span>
           <span className="badge badge-table">Table</span>
@@ -241,7 +241,7 @@ export default function MySQLToPostgresMigration() {
         }} />
       </div>
 
-<h2>Phase 3: Billing & Payment Tables</h2>
+      <h2>Phase 3: Billing & Payment Tables</h2>
 
       <div className="query-section">
         <div className="query-header">
@@ -303,7 +303,7 @@ export default function MySQLToPostgresMigration() {
         }} />
       </div>
 
-            <div className="query-section">
+      <div className="query-section">
         <div className="query-header">
           <span>Table: user_subscriptions</span>
           <span className="badge badge-table">Table</span>
@@ -339,7 +339,7 @@ export default function MySQLToPostgresMigration() {
         }} />
       </div>
 
-<h2>Phase 4: Content & Reference Tables</h2>
+      <h2>Phase 4: Content & Reference Tables</h2>
 
       <div className="query-section">
         <div className="query-header">
@@ -391,7 +391,7 @@ export default function MySQLToPostgresMigration() {
         }} />
       </div>
 
-            <div className="query-section">
+      <div className="query-section">
         <div className="query-header">
           <span>Table: essay_link_support</span>
           <span className="badge badge-table">Table</span>
@@ -535,7 +535,7 @@ export default function MySQLToPostgresMigration() {
         }} />
       </div>
 
-<h2>Phase 5: API Client Mapping</h2>
+      <h2>Phase 5: API Client Mapping</h2>
 
       <div className="query-section">
         <div className="query-header">
@@ -830,12 +830,12 @@ BEGIN</span>
       </table>
 
 
-      
+
       <h2>Additional Guides</h2>
 
       <h3>Data Migration</h3>
 
-<div className="query-section">
+      <div className="query-section">
         <div className="query-header">
           <span>Step 16: Data Migration & Sequence Reset</span>
           <span className="badge badge-table">Migration</span>
@@ -864,7 +864,7 @@ BEGIN</span>
 
       <h3>Post-Migration Verification</h3>
 
-<div className="query-section">
+      <div className="query-section">
         <div className="query-header">
           <span>Step 17: Post-Migration Verification</span>
           <span className="badge badge-index">Verification</span>
