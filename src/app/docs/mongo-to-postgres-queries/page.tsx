@@ -21,34 +21,11 @@ export default function MongoToPostgresQueries() {
         </ul>
       </div>
 
-      <h2>Phase 1: System & Reference Tables</h2>
+      <h2>Phase 1: Core Data Tables</h2>
 
       <div className="query-section">
         <div className="query-header">
-          <span>1. Create Table: <code>counters</code></span>
-          <span className="badge badge-primary">Sequence Management</span>
-        </div>
-        <div className="query-description">
-          Stores global counters and sequence values for ID generation across tables.
-        </div>
-        <div className="code-container query" dangerouslySetInnerHTML={{
-          __html: `<span class="c">-- Sequence counter for atomic ID generation</span>
-<span class="k">CREATE TABLE</span> counters (
-    key_name <span class="k">TEXT PRIMARY KEY</span>,
-    sequence_value <span class="k">BIGINT NOT NULL</span> <span class="k">DEFAULT</span> <span class="n">0</span>
-);
-
-<span class="c">-- Index on key_name for quick lookups</span>
-<span class="k">CREATE UNIQUE INDEX</span> idx_counters_key
-<span class="k">ON</span> counters(key_name);`
-        }} />
-      </div>
-
-      <h2>Phase 2: Core Data Tables</h2>
-
-      <div className="query-section">
-        <div className="query-header">
-          <span>2. Create Table: <code>sets</code></span>
+          <span>1. Create Table: <code>sets</code></span>
           <span className="badge badge-primary">Primary Table</span>
         </div>
         <div className="query-description">
@@ -83,7 +60,7 @@ export default function MongoToPostgresQueries() {
 
       <div className="query-section">
         <div className="query-header">
-          <span>2a. Indices for <code>sets</code> Table</span>
+          <span>1a. Indices for <code>sets</code> Table</span>
           <span className="badge badge-index">Performance</span>
         </div>
         <div className="code-container query" dangerouslySetInnerHTML={{
@@ -100,7 +77,7 @@ export default function MongoToPostgresQueries() {
 
       <div className="query-section">
         <div className="query-header">
-          <span>3. Create Table: <code>cards</code></span>
+          <span>2. Create Table: <code>cards</code></span>
           <span className="badge badge-primary">Child Table</span>
         </div>
         <div className="query-description">
@@ -136,7 +113,7 @@ export default function MongoToPostgresQueries() {
 
       <div className="query-section">
         <div className="query-header">
-          <span>3a. Indices for <code>cards</code> Table</span>
+          <span>2a. Indices for <code>cards</code> Table</span>
           <span className="badge badge-index">Performance</span>
         </div>
         <div className="code-container query" dangerouslySetInnerHTML={{
@@ -149,11 +126,11 @@ export default function MongoToPostgresQueries() {
         }} />
       </div>
 
-      <h2>Phase 3: Folders & Collections</h2>
+      <h2>Phase 2: Folders & Collections</h2>
 
       <div className="query-section">
         <div className="query-header">
-          <span>4. Create Table: <code>folders</code></span>
+          <span>3. Create Table: <code>folders</code></span>
           <span className="badge badge-primary">Collection Management</span>
         </div>
         <div className="query-description">
@@ -179,7 +156,7 @@ export default function MongoToPostgresQueries() {
 
       <div className="query-section">
         <div className="query-header">
-          <span>6a. Indices for <code>folders</code> Table</span>
+          <span>3a. Indices for <code>folders</code> Table</span>
           <span className="badge badge-index">Performance</span>
         </div>
         <div className="code-container query" dangerouslySetInnerHTML={{
@@ -193,7 +170,7 @@ export default function MongoToPostgresQueries() {
 
       <div className="query-section">
         <div className="query-header">
-          <span>7. Create Table: <code>folder_items</code></span>
+          <span>4. Create Table: <code>folder_items</code></span>
           <span className="badge badge-primary">Many-to-Many</span>
         </div>
         <div className="query-description">
@@ -215,7 +192,7 @@ export default function MongoToPostgresQueries() {
 
       <div className="query-section">
         <div className="query-header">
-          <span>7a. Indices for <code>folder_items</code> Table</span>
+          <span>4a. Indices for <code>folder_items</code> Table</span>
           <span className="badge badge-index">Performance</span>
         </div>
         <div className="code-container query" dangerouslySetInnerHTML={{
@@ -227,31 +204,11 @@ export default function MongoToPostgresQueries() {
         }} />
       </div>
 
-      <h2>Phase 5: Reference & Index Tables</h2>
+      <h2>Phase 3: Constraints & Composite Indices</h2>
 
       <div className="query-section">
         <div className="query-header">
-          <span>8. Create Table: <code>set_directory</code></span>
-          <span className="badge badge-primary">Directory Mapping</span>
-        </div>
-        <div className="query-description">
-          Maps flashcard sets to directory categories for organization.
-        </div>
-        <div className="code-container query" dangerouslySetInnerHTML={{
-          __html: `<span class="k">CREATE TABLE</span> set_directory (
-    set_id <span class="k">INTEGER NOT NULL</span>,
-    directory_id <span class="k">INTEGER NOT NULL</span>,
-    <span class="k">PRIMARY KEY</span> (set_id, directory_id),
-    <span class="k">FOREIGN KEY</span> (set_id) <span class="k">REFERENCES</span> sets(set_id) <span class="k">ON DELETE CASCADE</span>
-);`
-        }} />
-      </div>
-
-      <h2>Phase 4: Constraints & Composite Indices</h2>
-
-      <div className="query-section">
-        <div className="query-header">
-          <span>11. Composite Indices for Complex Queries</span>
+          <span>5. Composite Indices for Complex Queries</span>
           <span className="badge badge-index">Performance</span>
         </div>
         <div className="code-container query" dangerouslySetInnerHTML={{
@@ -283,12 +240,6 @@ export default function MongoToPostgresQueries() {
         </thead>
         <tbody>
           <tr>
-            <td>counters</td>
-            <td>key_name</td>
-            <td>TEXT</td>
-            <td>Atomic counter key</td>
-          </tr>
-          <tr>
             <td>sets</td>
             <td>set_id</td>
             <td>INTEGER</td>
@@ -306,12 +257,7 @@ export default function MongoToPostgresQueries() {
             <td>INTEGER</td>
             <td>Promoted from MongoDB</td>
           </tr>
-          <tr>
-            <td>set_directory</td>
-            <td>directory_item_id</td>
-            <td>SERIAL</td>
-            <td>Auto-generated</td>
-          </tr>
+
         </tbody>
       </table>
 
@@ -338,12 +284,6 @@ export default function MongoToPostgresQueries() {
             <td>folders(folder_id)</td>
             <td>ON DELETE CASCADE</td>
           </tr>
-          <tr>
-            <td>set_directory</td>
-            <td>set_id</td>
-            <td>sets(set_id)</td>
-            <td>ON DELETE CASCADE</td>
-          </tr>
         </tbody>
       </table>
 
@@ -365,12 +305,6 @@ export default function MongoToPostgresQueries() {
             <td>Foreign keys, common filters</td>
           </tr>
           <tr>
-            <td>Unique Indices</td>
-            <td>1</td>
-            <td>BTREE</td>
-            <td>counters.key_name</td>
-          </tr>
-          <tr>
             <td>Composite Indices</td>
             <td>4</td>
             <td>BTREE</td>
@@ -384,7 +318,7 @@ export default function MongoToPostgresQueries() {
           </tr>
           <tr>
             <td><strong>Total Indices</strong></td>
-            <td><strong>26</strong></td>
+            <td><strong>25</strong></td>
             <td>-</td>
             <td>Optimized for active tables</td>
           </tr>

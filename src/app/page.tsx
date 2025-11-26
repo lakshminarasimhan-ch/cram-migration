@@ -86,22 +86,7 @@ export default function Home() {
     },
   ];
 
-  const systemTables = [
-    {
-      title: 'Table: counters',
-      rows: [
-        { mongo: 'key', pg: 'key_name', type: 'TEXT', notes: 'PRIMARY KEY.' },
-        { mongo: 'value.value', pg: 'sequence_value', type: 'BIGINT', notes: 'Flattened high/low.' },
-      ]
-    },
-    {
-      title: 'Table: set_directory',
-      rows: [
-        { mongo: 'set_id.value', pg: 'set_id', type: 'INTEGER', notes: 'FK to sets.set_id.' },
-        { mongo: 'dir.value', pg: 'directory_id', type: 'INTEGER', notes: '' },
-      ]
-    },
-  ];
+
 
   const getBadgeClass = (type: string) => {
     switch (type) {
@@ -223,34 +208,6 @@ export default function Home() {
         </tbody>
       </table>
 
-      <h2>5. System Tables</h2>
-
-      {systemTables.map((table, tableIdx) => (
-        <div key={tableIdx}>
-          <h3>{table.title}</h3>
-          <table>
-            <thead>
-              <tr>
-                <th className="col-mongo">Mongo Path</th>
-                <th className="col-pg">Postgres Column</th>
-                <th className="col-type">Type</th>
-                <th className="col-notes">Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {table.rows.map((row, idx) => (
-                <tr key={idx}>
-                  <td><span className="mongo-path">{row.mongo}</span></td>
-                  <td><span className="pg-col">{row.pg}</span></td>
-                  <td><span className={`badge ${getBadgeClass(row.type)}`}>{row.type}</span></td>
-                  <td>{row.notes}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
-
       <h1 className="source-header">Excluded from Migration</h1>
       <div className="opt-note" style={{ borderColor: '#ff6b6b', background: '#fff5f5' }}>
         <strong>The following MongoDB collections and keys are NOT migrated to PostgreSQL:</strong>
@@ -285,6 +242,14 @@ export default function Home() {
           <tr>
             <td><code>fc_set_indexed_2</code></td>
             <td>No references found in active application code. Search moved to different system.</td>
+          </tr>
+          <tr>
+            <td><code>counters</code></td>
+            <td>Not needed in PostgreSQL. ID generation handled by PostgreSQL sequences instead of manual counters.</td>
+          </tr>
+          <tr>
+            <td><code>fc_set_directory</code></td>
+            <td>Used for HTML sitemaps. Can be handled via alternative methods like S3 or generated dynamically.</td>
           </tr>
         </tbody>
       </table>

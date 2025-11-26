@@ -115,7 +115,11 @@ export default function FlashcardsTableUsageModal() {
                                         fontSize: '14px',
                                         color: '#6b7280',
                                     }}>
-                                        Technical details for all 24 database tables
+                                        <span style={{ color: '#059669', fontWeight: '600' }}>11 tables migrating</span>
+                                        {' • '}
+                                        <span style={{ color: '#dc2626', fontWeight: '600' }}>32 tables excluded</span>
+                                        {' • '}
+                                        Technical details for all 43 database tables
                                     </p>
                                 </div>
                             </div>

@@ -20,86 +20,10 @@ export default function MySQLToPostgresSchemaMapping() {
     { name: 'user_status', values: ['active', 'inactive', 'pending', 'deleted'] },
   ];
 
+
   const tables = [
     {
       number: 1,
-      name: 'api_access_logs',
-      mysqlName: 'fc_api_access_logs',
-      columns: [
-        { pg: 'api_access_log_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'client_id', type: 'VARCHAR(32)', mysql: 'varchar(32)', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'method', type: 'http_method', mysql: 'enum(...)', notes: '' },
-        { pg: 'request_uri_raw', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'request_uri', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'client_ip', type: 'VARCHAR(100)', mysql: 'varchar(100)', notes: '' },
-        { pg: 'http_response_code', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'meta', type: 'TEXT', mysql: 'text', notes: '' },
-        { pg: 'created_date', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 2,
-      name: 'api_client',
-      mysqlName: 'fc_api_client',
-      columns: [
-        { pg: 'client_id', type: 'VARCHAR(32)', mysql: 'varchar(32) pk', notes: 'Primary Key' },
-        { pg: 'status', type: 'client_status', mysql: 'enum', notes: 'Active status' },
-        { pg: 'client_type', type: 'client_type', mysql: 'enum', notes: 'Type classification' },
-        { pg: 'api_key_hash', type: 'TEXT', mysql: 'text', notes: 'Hashed API key' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 3,
-      name: 'api_client_map_user',
-      mysqlName: 'fc_api_client_map_user',
-      columns: [
-        { pg: 'client_id', type: 'VARCHAR(32)', mysql: 'varchar(32) pk', notes: 'Primary Key' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int pk', notes: 'Primary Key' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 4,
-      name: 'api_v1_nonce',
-      mysqlName: 'fc_api_v1_nonce',
-      columns: [
-        { pg: 'nonce', type: 'VARCHAR(32)', mysql: 'varchar(32) pk', notes: 'Primary Key' },
-        { pg: 'client_id', type: 'VARCHAR(32)', mysql: 'varchar(32)', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 5,
-      name: 'api_v1_vendor',
-      mysqlName: 'fc_api_v1_vendor',
-      columns: [
-        { pg: 'vendor_id', type: 'SERIAL', mysql: 'int auto_inc pk', notes: 'Primary Key' },
-        { pg: 'client_id', type: 'VARCHAR(32)', mysql: 'varchar(32)', notes: '' },
-        { pg: 'vendor_name', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 6,
-      name: 'api_v1_request',
-      mysqlName: 'fc_api_v1_request',
-      columns: [
-        { pg: 'request_id', type: 'SERIAL', mysql: 'int auto_inc pk', notes: 'Primary Key' },
-        { pg: 'vendor_id', type: 'INTEGER', mysql: 'int fk', notes: 'Foreign Key' },
-        { pg: 'client_id', type: 'VARCHAR(32)', mysql: 'varchar(32)', notes: '' },
-        { pg: 'request_type', type: 'VARCHAR(50)', mysql: 'varchar(50)', notes: '' },
-        { pg: 'request_data', type: 'JSONB', mysql: 'json', notes: '' },
-        { pg: 'response_data', type: 'JSONB', mysql: 'json', notes: '' },
-        { pg: 'status', type: 'VARCHAR(20)', mysql: 'varchar(20)', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'processed_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 7,
       name: 'categories',
       mysqlName: 'fc_categories',
       columns: [
@@ -112,22 +36,7 @@ export default function MySQLToPostgresSchemaMapping() {
       ]
     },
     {
-      number: 8,
-      name: 'essay_link_support',
-      mysqlName: 'fc_essay_link_support',
-      columns: [
-        { pg: 'id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'target_url', type: 'TEXT', mysql: 'text', notes: '' },
-        { pg: 'url1', type: 'TEXT', mysql: 'text', notes: '' },
-        { pg: 'anchor1', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'url2', type: 'TEXT', mysql: 'text', notes: '' },
-        { pg: 'anchor2', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'url3', type: 'TEXT', mysql: 'text', notes: '' },
-        { pg: 'anchor3', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-      ]
-    },
-    {
-      number: 9,
+      number: 2,
       name: 'image',
       mysqlName: 'fc_image',
       columns: [
@@ -145,32 +54,35 @@ export default function MySQLToPostgresSchemaMapping() {
       ]
     },
     {
-      number: 10,
-      name: 'jewel_score_totals',
-      mysqlName: 'fc_jewel_score_totals',
+      number: 3,
+      name: 'gaming_totals',
+      mysqlName: 'fc_jewel_score_totals + fc_stellarspeller_score_totals',
       columns: [
-        { pg: 'id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'total_score', type: 'INTEGER', mysql: 'int', notes: 'Default 0' },
-        { pg: 'games_played', type: 'INTEGER', mysql: 'int', notes: 'Default 0' },
-        { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
+        { pg: 'id', type: 'SERIAL', mysql: 'N/A', notes: 'New PG primary key' },
+        { pg: 'set_id', type: 'INTEGER', mysql: 'int pk', notes: 'From MySQL PK' },
+        { pg: 'game_type', type: 'VARCHAR(50)', mysql: 'N/A', notes: "'jewel' or 'stellarspeller'" },
+        { pg: 'num_scores', type: 'INTEGER', mysql: 'int', notes: 'Default 0' },
+        { pg: 'sum_scores', type: 'INTEGER', mysql: 'int', notes: 'Default 0' },
       ]
     },
     {
-      number: 11,
-      name: 'jewel_scores',
-      mysqlName: 'fc_jewel_scores',
+      number: 4,
+      name: 'gaming_scores',
+      mysqlName: 'fc_jewel_scores + fc_stellarspeller_scores',
       columns: [
-        { pg: 'score_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
+        { pg: 'id', type: 'SERIAL', mysql: 'int auto_inc', notes: 'Primary Key' },
+        { pg: 'game_type', type: 'VARCHAR(50)', mysql: 'N/A', notes: "'jewel' or 'stellarspeller'" },
         { pg: 'score', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'level', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'game_duration', type: 'INTEGER', mysql: 'int', notes: 'Seconds' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
+        { pg: 'name', type: 'VARCHAR(31)', mysql: 'varchar(31)', notes: '' },
+        { pg: 'accuracy', type: 'VARCHAR(31)', mysql: 'varchar(31)', notes: '' },
+        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: 'Default 0' },
+        { pg: 'created', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
+        { pg: 'set_id', type: 'INTEGER', mysql: 'int', notes: '' },
+        { pg: 'time', type: 'INTEGER', mysql: 'int', notes: 'Milliseconds to finish set' },
       ]
     },
     {
-      number: 12,
+      number: 5,
       name: 'payment_subscriptions',
       mysqlName: 'fc_payment_subscriptions',
       columns: [
@@ -192,7 +104,7 @@ export default function MySQLToPostgresSchemaMapping() {
       ]
     },
     {
-      number: 13,
+      number: 6,
       name: 'payment_transaction_log',
       mysqlName: 'fc_payment_transaction_log',
       columns: [
@@ -208,91 +120,22 @@ export default function MySQLToPostgresSchemaMapping() {
       ]
     },
     {
-      number: 14,
-      name: 'reports',
-      mysqlName: 'fc_reports',
-      columns: [
-        { pg: 'report_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'report_type', type: 'VARCHAR(50)', mysql: 'varchar(50)', notes: '' },
-        { pg: 'status', type: 'report_status', mysql: 'enum(...)', notes: '' },
-        { pg: 'title', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'content', type: 'TEXT', mysql: 'text', notes: '' },
-        { pg: 'metadata', type: 'JSONB', mysql: 'json', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'resolved_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 15,
-      name: 'stellarspeller_score_totals',
-      mysqlName: 'fc_stellarspeller_score_totals',
-      columns: [
-        { pg: 'id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'total_score', type: 'INTEGER', mysql: 'int', notes: 'Default 0' },
-        { pg: 'games_played', type: 'INTEGER', mysql: 'int', notes: 'Default 0' },
-        { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 16,
-      name: 'stellarspeller_scores',
-      mysqlName: 'fc_stellarspeller_scores',
-      columns: [
-        { pg: 'score_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'score', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'level', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'words_found', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'time_bonus', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 17,
-      name: 'takedowns',
-      mysqlName: 'fc_takedowns',
-      columns: [
-        { pg: 'takedown_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'moderator_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'content_type', type: 'VARCHAR(50)', mysql: 'varchar(50)', notes: '' },
-        { pg: 'content_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'reason', type: 'TEXT', mysql: 'text', notes: '' },
-        { pg: 'status', type: 'VARCHAR(20)', mysql: 'varchar(20)', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'resolved_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 18,
-      name: 'user_email_notifications',
-      mysqlName: 'fc_user_email_notifications',
-      columns: [
-        { pg: 'notification_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'notification_type', type: 'VARCHAR(100)', mysql: 'varchar(100)', notes: '' },
-        { pg: 'email_sent', type: 'BOOLEAN', mysql: 'tinyint(1)', notes: '' },
-        { pg: 'sent_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 19,
+      number: 7,
       name: 'user_social',
       mysqlName: 'fc_user_social',
       columns: [
-        { pg: 'social_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'provider', type: 'VARCHAR(50)', mysql: 'varchar(50)', notes: '' },
-        { pg: 'provider_id', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'profile_data', type: 'JSONB', mysql: 'json', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
+        { pg: 'user_id', type: 'INTEGER', mysql: 'int pk', notes: 'Part of Composite PK' },
+        { pg: 'social_type', type: 'VARCHAR(16)', mysql: 'varchar(16) pk', notes: 'Part of Composite PK' },
+        { pg: 'social_id', type: 'VARCHAR(32)', mysql: 'varchar(32) pk', notes: 'Part of Composite PK' },
+        { pg: 'converted', type: 'BOOLEAN', mysql: 'tinyint(1)', notes: '' },
+        { pg: 'meta', type: 'TEXT', mysql: 'text', notes: '' },
+        { pg: 'created', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
+        { pg: 'updated', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
+        { pg: 'site_id', type: 'SMALLINT', mysql: 'smallint', notes: 'Default 100' },
       ]
     },
     {
-      number: 20,
+      number: 8,
       name: 'users',
       mysqlName: 'fc_users',
       columns: [
@@ -316,21 +159,7 @@ export default function MySQLToPostgresSchemaMapping() {
       ]
     },
     {
-      number: 21,
-      name: 'translations',
-      mysqlName: 'translations',
-      columns: [
-        { pg: 'translation_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'key_name', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'language_code', type: 'VARCHAR(5)', mysql: 'varchar(5)', notes: '' },
-        { pg: 'translation_text', type: 'TEXT', mysql: 'text', notes: '' },
-        { pg: 'context', type: 'VARCHAR(100)', mysql: 'varchar(100)', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 22,
+      number: 9,
       name: 'user_cancellation_reason_log',
       mysqlName: 'user_cancellation_reason_log',
       columns: [
@@ -340,36 +169,8 @@ export default function MySQLToPostgresSchemaMapping() {
         { pg: 'additional_feedback', type: 'TEXT', mysql: 'text', notes: '' },
         { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
       ]
-    },
-    {
-      number: 23,
-      name: 'user_subscriptions',
-      mysqlName: 'user_subscriptions',
-      columns: [
-        { pg: 'subscription_id', type: 'SERIAL', mysql: 'int auto_inc', notes: '' },
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: '' },
-        { pg: 'plan_id', type: 'VARCHAR(100)', mysql: 'varchar(100)', notes: '' },
-        { pg: 'status', type: 'sub_status', mysql: 'enum(...)', notes: '' },
-        { pg: 'started_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'expires_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'auto_renew', type: 'BOOLEAN', mysql: 'tinyint(1)', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-        { pg: 'updated_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
-    },
-    {
-      number: 24,
-      name: 'users_nta',
-      mysqlName: 'users_nta',
-      columns: [
-        { pg: 'user_id', type: 'INTEGER', mysql: 'int', notes: 'No triggers applied' },
-        { pg: 'username', type: 'VARCHAR(100)', mysql: 'varchar(100)', notes: '' },
-        { pg: 'email', type: 'VARCHAR(255)', mysql: 'varchar(255)', notes: '' },
-        { pg: 'status', type: 'user_status', mysql: 'enum(...)', notes: '' },
-        { pg: 'created_at', type: 'TIMESTAMP', mysql: 'datetime', notes: '' },
-      ]
     }
-  ];;
+  ];
 
   const getBadgeClass = (type: string) => {
     if (type === 'SERIAL') return 't-pk';
@@ -509,6 +310,114 @@ export default function MySQLToPostgresSchemaMapping() {
           <tr>
             <td><code>fc_api_aggregate_methods</code></td>
             <td>No references found in codebase.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Deprecated API Tables</h2>
+      <p style={{ fontSize: '13px', color: '#666', marginBottom: '10px' }}>Legacy API infrastructure with no recent activity. Last records date back to 2012-2015.</p>
+      <table>
+        <thead>
+          <tr>
+            <th className="col-name">MySQL Table</th>
+            <th className="col-notes">Reason for Exclusion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>fc_api_access_logs</code></td>
+            <td>Last record: 2014-05-26. Deprecated API logging system, replaced by modern analytics infrastructure.</td>
+          </tr>
+          <tr>
+            <td><code>fc_api_client</code></td>
+            <td>Last record: 2015-04-11. Legacy OAuth client system no longer in use.</td>
+          </tr>
+          <tr>
+            <td><code>fc_api_client_map_user</code></td>
+            <td>Last record: 2015-04-11. Client-user mapping for deprecated API system.</td>
+          </tr>
+          <tr>
+            <td><code>fc_api_v1_nonce</code></td>
+            <td>Last record: 1397042008 (Unix timestamp: 2014-04-09). OAuth nonce tracking for deprecated API v1.</td>
+          </tr>
+          <tr>
+            <td><code>fc_api_v1_vendor</code></td>
+            <td>Last record: 2012-10-25. Vendor management for discontinued API v1.</td>
+          </tr>
+          <tr>
+            <td><code>fc_api_v1_request</code></td>
+            <td>Last record: 1397042016 (Unix timestamp: 2014-04-09). Request tracking for deprecated API v1.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Gaming Features (Consolidated)</h2>
+      <p style={{ fontSize: '13px', color: '#666', marginBottom: '10px' }}>
+        <strong>✓ Implemented:</strong> The following gaming tables have been consolidated into two unified tables: <code>gaming_scores</code> and <code>gaming_totals</code> to reduce schema complexity and improve maintainability.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th className="col-name">Original MySQL Table</th>
+            <th className="col-notes">Consolidated Into</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>fc_jewel_scores</code></td>
+            <td><code>gaming_scores</code> with game_type='jewel'</td>
+          </tr>
+          <tr>
+            <td><code>fc_jewel_score_totals</code></td>
+            <td><code>gaming_totals</code> with game_type='jewel'</td>
+          </tr>
+          <tr>
+            <td><code>fc_stellarspeller_scores</code></td>
+            <td><code>gaming_scores</code> with game_type='stellarspeller'</td>
+          </tr>
+          <tr>
+            <td><code>fc_stellarspeller_score_totals</code></td>
+            <td><code>gaming_totals</code> with game_type='stellarspeller'</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Feature-Specific Exclusions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th className="col-name">MySQL Table</th>
+            <th className="col-notes">Reason for Exclusion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>fc_user_email_notifications</code></td>
+            <td>Feature not currently in use. Can be migrated later if email notification system is reactivated.</td>
+          </tr>
+          <tr>
+            <td><code>fc_reports</code></td>
+            <td>Content flagging now handled by Learneo platform. No longer needed in Cram database.</td>
+          </tr>
+          <tr>
+            <td><code>fc_takedowns</code></td>
+            <td>Migrate data to admin table instead of creating new PostgreSQL table. Moderation handled separately.</td>
+          </tr>
+          <tr>
+            <td><code>translations</code></td>
+            <td>I18n feature not supported in new Cram website. Translation system not implemented.</td>
+          </tr>
+          <tr>
+            <td><code>fc_essay_link_support</code></td>
+            <td>Essay link feature discontinued. No longer part of product roadmap.</td>
+          </tr>
+          <tr>
+            <td><code>users_nta</code></td>
+            <td>NTA (No Triggers Applied) users not supported. Cram is free for all users initially, making this table unnecessary.</td>
+          </tr>
+          <tr>
+            <td><code>user_subscriptions</code></td>
+            <td>Notification/subscription system being remodeled. Existing data not compatible with new architecture.</td>
           </tr>
         </tbody>
       </table>

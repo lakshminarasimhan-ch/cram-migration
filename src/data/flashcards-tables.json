@@ -1,0 +1,346 @@
+[
+    {
+        "name": "fc_users",
+        "status": "Active",
+        "purpose": "Master User Table",
+        "description": "Stores username, email, password (hashed), user_type (Member/Premium), and status.",
+        "frontendUsage": "Used on every page load to validate session. Sign up & Login flows, Profile settings updates, Password reset requests.",
+        "technicalDetails": "File: application/models/User.php\nClass: Model_User\nFunctions: createUser(), getUserInfo(), update()"
+    },
+    {
+        "name": "fc_user_social",
+        "status": "Active",
+        "purpose": "Social Login Links",
+        "description": "Maps local user_id to external provider IDs (Facebook, Google, Twitter).",
+        "frontendUsage": "Used during the 'Login with...' flow. User clicks 'Log in with Google/Facebook'.",
+        "technicalDetails": "File: application/models/User.php\nClass: Model_User\nRef: const TABLE_USER_SOCIAL"
+    },
+    {
+        "name": "fc_jewel_scores",
+        "status": "Active",
+        "purpose": "Jewel Game Scores",
+        "description": "Stores every game session score: score, accuracy, time, user_id.",
+        "frontendUsage": "Shown in the 'High Scores' list after finishing a game. POST to /games/save-score immediately after game over.",
+        "technicalDetails": "File: application/models/Jewelscores.php\nClass: Model_Gamescores\nController: GamesController::saveScoreAction"
+    },
+    {
+        "name": "fc_jewel_score_totals",
+        "status": "Active",
+        "purpose": "Jewel Leaderboard Aggregates",
+        "description": "Stores sum_scores and num_scores per flashcard set to calculate averages.",
+        "frontendUsage": "Used to show 'Average Score' on the game intro screen. Updated automatically whenever a new score is inserted.",
+        "technicalDetails": "File: application/models/Jewelscores.php\nClass: Model_Gamescores\nFunctions: create() (updates totals)"
+    },
+    {
+        "name": "fc_stellarspeller_scores",
+        "status": "Active",
+        "purpose": "Stellar Speller Scores",
+        "description": "Stores individual scores for the Stellar Speller game.",
+        "frontendUsage": "'High Scores' list for Stellar Speller. POST to /games/save-score.",
+        "technicalDetails": "File: application/models/Jewelscores.php\nClass: Model_Gamescores\nController: GamesController::saveScoreAction"
+    },
+    {
+        "name": "fc_stellarspeller_score_totals",
+        "status": "Active",
+        "purpose": "Stellar Leaderboard Aggregates",
+        "description": "Stores sum_scores and num_scores for Stellar Speller.",
+        "frontendUsage": "'Average Score' display on game intro. Updated on new score submission.",
+        "technicalDetails": "File: application/models/Jewelscores.php\nClass: Model_Gamescores\nFunctions: create() (updates totals)"
+    },
+    {
+        "name": "fc_payment_subscriptions",
+        "status": "Active",
+        "purpose": "Payment State",
+        "description": "Stores the actual paid subscription status (active, canceled, expired), plan info, and dates.",
+        "frontendUsage": "Determines if a user sees ads or has premium features. Checkout success, Webhook updates.",
+        "technicalDetails": "File: application/models/Payments/Subscription.php\nClass: Model_Payments_Subscription\nFunctions: save()"
+    },
+    {
+        "name": "fc_payment_transaction_log",
+        "status": "Active",
+        "purpose": "Audit Trail",
+        "description": "Logs raw transaction details for debugging and customer support.",
+        "frontendUsage": "Not directly shown to users, but critical for support. Any payment attempt (success or failure).",
+        "technicalDetails": "File: application/models/Payments/Transaction.php\nClass: Model_Payments_Transaction\nFunctions: save()"
+    },
+    {
+        "name": "user_cancellation_reason_log",
+        "status": "Active",
+        "purpose": "Churn Feedback",
+        "description": "Stores the reason a user selected when canceling their subscription.",
+        "frontendUsage": "Used in the cancellation flow modal. User clicks 'Cancel Subscription' and selects a reason.",
+        "technicalDetails": "File: application/models/Payments/CancellationReasonLog.php\nClass: Model_Payments_CancellationReasonLog\nFunctions: addToLog()"
+    },
+    {
+        "name": "fc_categories",
+        "status": "Active",
+        "purpose": "Taxonomy",
+        "description": "The tree structure of subjects (e.g., 'Languages > Spanish').",
+        "frontendUsage": "Used in the 'Browse' dropdown and Search filters. Admin managed, or read-only for users browsing.",
+        "technicalDetails": "File: library/CR/Flashcards/Api.php\nClass: CR_Flashcards_Api"
+    },
+    {
+        "name": "fc_image",
+        "status": "Active",
+        "purpose": "Image Metadata",
+        "description": "Stores S3 paths and metadata for images uploaded to flashcards.",
+        "frontendUsage": "Used in the Flashcard Editor and Study mode. User uploads an image to a card side.",
+        "technicalDetails": "File: application/models/Image.php\nClass: Model_Image"
+    },
+    {
+        "name": "fc_api_access_logs",
+        "status": "Excluded",
+        "purpose": "Deprecated API Usage Logs",
+        "description": "Logs every API request (method, uri, response_code) for rate limiting. Deprecated.",
+        "frontendUsage": "None",
+        "technicalDetails": "Legacy API infrastructure."
+    },
+    {
+        "name": "fc_api_aggregate_functions",
+        "status": "Excluded",
+        "purpose": "Deprecated API Analytics",
+        "description": "Intended for API analytics but never implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references found in codebase."
+    },
+    {
+        "name": "fc_api_aggregate_methods",
+        "status": "Excluded",
+        "purpose": "Deprecated API Analytics",
+        "description": "Intended for API analytics but never implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references found in codebase."
+    },
+    {
+        "name": "fc_api_client",
+        "status": "Excluded",
+        "purpose": "Legacy OAuth Clients",
+        "description": "Stores client_id, client_secret, and redirect_uri for registered apps. Legacy.",
+        "frontendUsage": "None",
+        "technicalDetails": "Legacy OAuth client system no longer in use."
+    },
+    {
+        "name": "fc_api_client_map_user",
+        "status": "Excluded",
+        "purpose": "Legacy OAuth User Mapping",
+        "description": "Links a user_id to a client_id. Legacy.",
+        "frontendUsage": "None",
+        "technicalDetails": "Legacy OAuth client system no longer in use."
+    },
+    {
+        "name": "fc_api_v1_nonce",
+        "status": "Excluded",
+        "purpose": "Legacy API v1 Security",
+        "description": "OAuth nonce tracking for deprecated API v1.",
+        "frontendUsage": "None",
+        "technicalDetails": "Legacy API v1."
+    },
+    {
+        "name": "fc_api_v1_vendor",
+        "status": "Excluded",
+        "purpose": "Legacy API v1 Vendors",
+        "description": "Vendor management for discontinued API v1.",
+        "frontendUsage": "None",
+        "technicalDetails": "Legacy API v1."
+    },
+    {
+        "name": "fc_api_v1_request",
+        "status": "Excluded",
+        "purpose": "Legacy API v1 Requests",
+        "description": "Request tracking for deprecated API v1.",
+        "frontendUsage": "None",
+        "technicalDetails": "Legacy API v1."
+    },
+    {
+        "name": "fc_apps",
+        "status": "Excluded",
+        "purpose": "Unimplemented Apps Marketplace",
+        "description": "The apps marketplace feature was planned but never implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No actual table usage in models or controllers."
+    },
+    {
+        "name": "fc_apps_data",
+        "status": "Excluded",
+        "purpose": "Unimplemented Apps Marketplace",
+        "description": "The apps marketplace feature was planned but never implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references found in codebase."
+    },
+    {
+        "name": "fc_apps_dev",
+        "status": "Excluded",
+        "purpose": "Unimplemented Apps Marketplace",
+        "description": "The apps marketplace feature was planned but never implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references found in codebase."
+    },
+    {
+        "name": "fc_apps_images",
+        "status": "Excluded",
+        "purpose": "Unimplemented Apps Marketplace",
+        "description": "The apps marketplace feature was planned but never implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references found in codebase."
+    },
+    {
+        "name": "fc_essay_link_support",
+        "status": "Excluded",
+        "purpose": "Discontinued Essay Linking",
+        "description": "Essay link feature discontinued. No longer part of product roadmap.",
+        "frontendUsage": "None",
+        "technicalDetails": "Feature discontinued."
+    },
+    {
+        "name": "fc_langs",
+        "status": "Excluded",
+        "purpose": "Legacy Language Table",
+        "description": "Replaced by translations table. No active usage.",
+        "frontendUsage": "None",
+        "technicalDetails": "Replaced by translations table."
+    },
+    {
+        "name": "fc_privileges",
+        "status": "Excluded",
+        "purpose": "Unused RBAC",
+        "description": "The Role-Based Access Control (RBAC) system was never fully implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references in active application code."
+    },
+    {
+        "name": "fc_reports",
+        "status": "Excluded",
+        "purpose": "Content Flagging",
+        "description": "Content flagging now handled by Learneo platform. No longer needed in Cram database.",
+        "frontendUsage": "None",
+        "technicalDetails": "Handled by Learneo platform."
+    },
+    {
+        "name": "fc_resources",
+        "status": "Excluded",
+        "purpose": "Unused RBAC",
+        "description": "The Role-Based Access Control (RBAC) system was never fully implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references in active application code."
+    },
+    {
+        "name": "fc_roles",
+        "status": "Excluded",
+        "purpose": "Unused RBAC",
+        "description": "The Role-Based Access Control (RBAC) system was never fully implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references in active application code."
+    },
+    {
+        "name": "fc_takedowns",
+        "status": "Excluded",
+        "purpose": "Moderation",
+        "description": "Migrate data to admin table instead of creating new PostgreSQL table. Moderation handled separately.",
+        "frontendUsage": "None",
+        "technicalDetails": "Moderation handled separately."
+    },
+    {
+        "name": "fc_user_email_notifications",
+        "status": "Excluded",
+        "purpose": "Unused Email Preferences",
+        "description": "Feature not currently in use. Can be migrated later if email notification system is reactivated.",
+        "frontendUsage": "None",
+        "technicalDetails": "Feature not currently in use."
+    },
+    {
+        "name": "fc_user_role",
+        "status": "Excluded",
+        "purpose": "Unused RBAC",
+        "description": "Only found in old migration scripts.",
+        "frontendUsage": "None",
+        "technicalDetails": "Only found in old migration scripts."
+    },
+    {
+        "name": "fcdb_to_fce_cardset_map",
+        "status": "Excluded",
+        "purpose": "Migration Artifact",
+        "description": "FlashcardDB -> FCE migration. Only in migration scripts.",
+        "frontendUsage": "None",
+        "technicalDetails": "Migration artifact."
+    },
+    {
+        "name": "fcdb_to_fce_meta",
+        "status": "Excluded",
+        "purpose": "Migration Artifact",
+        "description": "Migration metadata. Only in migration scripts.",
+        "frontendUsage": "None",
+        "technicalDetails": "Migration artifact."
+    },
+    {
+        "name": "fcdb_to_fce_user_map",
+        "status": "Excluded",
+        "purpose": "Migration Artifact",
+        "description": "User ID mapping. Only in migration scripts.",
+        "frontendUsage": "None",
+        "technicalDetails": "Migration artifact."
+    },
+    {
+        "name": "temp_fcimage_migration_data",
+        "status": "Excluded",
+        "purpose": "Migration Artifact",
+        "description": "Temporary image migration table.",
+        "frontendUsage": "None",
+        "technicalDetails": "Migration artifact."
+    },
+    {
+        "name": "temp_fcimage_migration_data_backup",
+        "status": "Excluded",
+        "purpose": "Migration Artifact",
+        "description": "Image migration backup table.",
+        "frontendUsage": "None",
+        "technicalDetails": "Migration artifact."
+    },
+    {
+        "name": "temp_fcimage_migration_limits",
+        "status": "Excluded",
+        "purpose": "Migration Artifact",
+        "description": "Image migration configuration.",
+        "frontendUsage": "None",
+        "technicalDetails": "Migration artifact."
+    },
+    {
+        "name": "temp_fcimage_migration_processed",
+        "status": "Excluded",
+        "purpose": "Migration Artifact",
+        "description": "Image migration progress tracking.",
+        "frontendUsage": "None",
+        "technicalDetails": "Migration artifact."
+    },
+    {
+        "name": "translations",
+        "status": "Excluded",
+        "purpose": "Unused i18n",
+        "description": "I18n feature not supported in new Cram website. Translation system not implemented.",
+        "frontendUsage": "None",
+        "technicalDetails": "Translation system not implemented."
+    },
+    {
+        "name": "user_subscriptions",
+        "status": "Excluded",
+        "purpose": "Legacy Newsletter & Notification System",
+        "description": "User subscription and notification preferences. Not needed for new Cram website architecture.",
+        "frontendUsage": "Used in user profile settings and subscription management. AJAX calls to /subscriptions/modify update preferences. CASL compliance modal shown to Canadian users.",
+        "technicalDetails": "Legacy subscription system not supported in new website."
+    },
+    {
+        "name": "users",
+        "status": "Excluded",
+        "purpose": "Legacy/Duplicate User Table",
+        "description": "Likely a legacy or duplicate user table. fc_users is the active one.",
+        "frontendUsage": "None",
+        "technicalDetails": "No references in active application code."
+    },
+    {
+        "name": "users_nta",
+        "status": "Excluded",
+        "purpose": "Legacy NTA Partnership Program",
+        "description": "National Tutoring Association partnership program data. Not needed for new Cram website architecture.",
+        "frontendUsage": "Used during NTA member registration flow at /nta. Members enter their information to redeem complimentary premium access. POST to /nta/index validates credentials and grants premium status.",
+        "technicalDetails": "Legacy partnership program not supported in new website."
+    }
+]
