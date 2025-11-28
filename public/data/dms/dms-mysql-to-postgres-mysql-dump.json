@@ -1,0 +1,135 @@
+{
+    "rules": [
+        {
+            "rule-type": "selection",
+            "rule-id": "1",
+            "rule-name": "include-categories",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_categories"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "2",
+            "rule-name": "include-image",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_image"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "3",
+            "rule-name": "include-jewel-scores",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_jewel_scores"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "4",
+            "rule-name": "include-jewel-score-totals",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_jewel_score_totals"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "5",
+            "rule-name": "include-stellarspeller-scores",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_stellarspeller_scores"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "6",
+            "rule-name": "include-stellarspeller-score-totals",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_stellarspeller_score_totals"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "7",
+            "rule-name": "include-payment-subscriptions",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_payment_subscriptions"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "8",
+            "rule-name": "include-payment-transaction-log",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_payment_transaction_log"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "9",
+            "rule-name": "include-user-social",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_user_social"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "10",
+            "rule-name": "include-users",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "fc_users"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "11",
+            "rule-name": "include-user-cancellation-reason-log",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "user_cancellation_reason_log"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "12",
+            "rule-name": "move-all-tables-to-mysql-dump-schema",
+            "rule-target": "schema",
+            "object-locator": {
+                "schema-name": "%"
+            },
+            "rule-action": "rename",
+            "value": "mysql_dump"
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "13",
+            "rule-name": "exclude-all-other-tables",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "%"
+            },
+            "rule-action": "exclude"
+        }
+    ]
+}

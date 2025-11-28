@@ -7,7 +7,8 @@ const navigationItems = [
   { href: '/', label: 'Mongo Mapping', id: 'mongo-mapping-tab' },
   { href: '/docs/mongo-to-postgres-queries', label: 'PostgreSQL Queries (Mongo)', id: 'mongo-queries-tab' },
   { href: '/docs/mysql-to-postgres-schema-mapping', label: 'MySQL Schema Mapping', id: 'mysql-mapping-tab' },
-  { href: '/docs/mysql-to-postgres-migration', label: 'MySQL Migration Guide', id: 'mysql-migration-tab' },
+  { href: '/docs/mysql-to-postgres-migration', label: 'PostgreSQL Queries (MySQL)', id: 'mysql-migration-tab' },
+  { href: '/docs/migration-steps', label: 'Migration Steps', id: 'migration-steps-tab' },
 ]
 
 export default function Navigation() {
@@ -18,6 +19,7 @@ export default function Navigation() {
     if (pathname === '/docs/mongo-to-postgres-queries') return 'mongo-queries-tab'
     if (pathname === '/docs/mysql-to-postgres-schema-mapping') return 'mysql-mapping-tab'
     if (pathname === '/docs/mysql-to-postgres-migration') return 'mysql-migration-tab'
+    if (pathname === '/docs/migration-steps') return 'migration-steps-tab'
     return ''
   }
 

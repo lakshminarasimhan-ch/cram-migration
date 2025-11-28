@@ -1,4 +1,20 @@
 # MySQL to PostgreSQL Migration - Complete Package
+
+## 📁 Directory Structure
+
+```
+/src/data/
+├── dms/
+│   └── dms-mysql-to-postgres-mysql-dump.json    # AWS DMS table mapping rules
+├── migration/
+│   ├── pre-migration-setup.sql               # Run BEFORE DMS migration
+│   └── post-migration-transform.sql          # Run AFTER DMS migration
+├── docs/
+│   └── schema-mapping.json                   # Complete schema reference
+├── cram-mysql.sql                            # Original MySQL DDL (reference)
+└── README.md                                 # This file
+```
+
 ## 🚀 Quick Start
 
 ### Step 1: Pre-Migration Setup (2 minutes)
