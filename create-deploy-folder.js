@@ -26,7 +26,6 @@ const EXCLUDE_PATTERNS = [
   'run-*.js',
   'create-deploy-folder.js',
   'create-deploy-zip.js',
-  'data',
   './docs',
   'index.html',
   'util',

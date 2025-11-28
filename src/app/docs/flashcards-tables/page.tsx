@@ -1,5 +1,5 @@
 import React from 'react';
-import tablesData from '../../../data/flashcards-tables.json';
+import tablesData from '@/data/flashcards-tables.json';
 
 export default function FlashcardsTableUsage() {
     const activeTables = tablesData.filter(t => t.status === 'Active');

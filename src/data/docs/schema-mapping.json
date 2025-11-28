@@ -1,0 +1,566 @@
+{
+    "tables": [
+        {
+            "number": 1,
+            "name": "categories",
+            "mysqlName": "fc_categories",
+            "columns": [
+                {
+                    "pg": "category_id",
+                    "type": "SMALLSERIAL",
+                    "mysql": "smallint auto_inc",
+                    "notes": "Primary key"
+                },
+                {
+                    "pg": "site_id",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": ""
+                },
+                {
+                    "pg": "parent",
+                    "type": "VARCHAR(128)",
+                    "mysql": "varchar(128)",
+                    "notes": ""
+                },
+                {
+                    "pg": "slug",
+                    "type": "VARCHAR(128)",
+                    "mysql": "varchar(128)",
+                    "notes": "Indexed"
+                },
+                {
+                    "pg": "title",
+                    "type": "VARCHAR(128)",
+                    "mysql": "varchar(128)",
+                    "notes": ""
+                },
+                {
+                    "pg": "count",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "number": 2,
+            "name": "image",
+            "mysqlName": "fc_image",
+            "columns": [
+                {
+                    "pg": "image_id",
+                    "type": "SERIAL",
+                    "mysql": "int auto_inc",
+                    "notes": "Primary key"
+                },
+                {
+                    "pg": "title",
+                    "type": "VARCHAR(255)",
+                    "mysql": "varchar(255)",
+                    "notes": ""
+                },
+                {
+                    "pg": "src",
+                    "type": "VARCHAR(255)",
+                    "mysql": "varchar(255)",
+                    "notes": ""
+                },
+                {
+                    "pg": "extension",
+                    "type": "img_ext",
+                    "mysql": "enum('jpeg','jpg','png','gif')",
+                    "notes": "ENUM type"
+                },
+                {
+                    "pg": "hash",
+                    "type": "VARCHAR(32)",
+                    "mysql": "varchar(32)",
+                    "notes": ""
+                },
+                {
+                    "pg": "provider",
+                    "type": "VARCHAR(255)",
+                    "mysql": "varchar(255)",
+                    "notes": ""
+                },
+                {
+                    "pg": "description",
+                    "type": "TEXT",
+                    "mysql": "text",
+                    "notes": ""
+                },
+                {
+                    "pg": "access",
+                    "type": "img_access",
+                    "mysql": "enum('private','public','inactive','deleted')",
+                    "notes": "ENUM type"
+                },
+                {
+                    "pg": "meta",
+                    "type": "TEXT",
+                    "mysql": "text",
+                    "notes": ""
+                },
+                {
+                    "pg": "creator_id",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": ""
+                },
+                {
+                    "pg": "created",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime",
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "number": 3,
+            "name": "gaming_totals",
+            "mysqlName": "fc_jewel_score_totals + fc_stellarspeller_score_totals",
+            "columns": [
+                {
+                    "pg": "id",
+                    "type": "SERIAL",
+                    "mysql": "N/A",
+                    "notes": "New PostgreSQL primary key"
+                },
+                {
+                    "pg": "set_id",
+                    "type": "INTEGER",
+                    "mysql": "int (was PK)",
+                    "notes": "From MySQL primary key"
+                },
+                {
+                    "pg": "game_type",
+                    "type": "VARCHAR(50)",
+                    "mysql": "N/A",
+                    "notes": "'jewel' or 'stellarspeller' discriminator"
+                },
+                {
+                    "pg": "num_scores",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": "Default 0"
+                },
+                {
+                    "pg": "sum_scores",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": "Default 0"
+                }
+            ]
+        },
+        {
+            "number": 4,
+            "name": "gaming_scores",
+            "mysqlName": "fc_jewel_scores + fc_stellarspeller_scores",
+            "columns": [
+                {
+                    "pg": "id",
+                    "type": "SERIAL",
+                    "mysql": "int auto_inc",
+                    "notes": "Primary key"
+                },
+                {
+                    "pg": "game_type",
+                    "type": "VARCHAR(50)",
+                    "mysql": "N/A",
+                    "notes": "'jewel' or 'stellarspeller' discriminator"
+                },
+                {
+                    "pg": "score",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": ""
+                },
+                {
+                    "pg": "name",
+                    "type": "VARCHAR(31)",
+                    "mysql": "varchar(31)",
+                    "notes": ""
+                },
+                {
+                    "pg": "accuracy",
+                    "type": "VARCHAR(31)",
+                    "mysql": "varchar(31)",
+                    "notes": ""
+                },
+                {
+                    "pg": "user_id",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": "Default 0"
+                },
+                {
+                    "pg": "created",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime",
+                    "notes": ""
+                },
+                {
+                    "pg": "set_id",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": ""
+                },
+                {
+                    "pg": "time",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": "Milliseconds to finish set"
+                }
+            ]
+        },
+        {
+            "number": 5,
+            "name": "payment_subscriptions",
+            "mysqlName": "fc_payment_subscriptions",
+            "columns": [
+                {
+                    "pg": "subscription_id",
+                    "type": "SERIAL",
+                    "mysql": "int auto_inc (id)",
+                    "notes": "Primary key, renamed from 'id'"
+                },
+                {
+                    "pg": "user_id",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": ""
+                },
+                {
+                    "pg": "stripe_subscription_id",
+                    "type": "VARCHAR(255)",
+                    "mysql": "varchar(64) (external_id)",
+                    "notes": "Renamed from 'external_id'"
+                },
+                {
+                    "pg": "status",
+                    "type": "sub_status",
+                    "mysql": "enum('new','active','canceled','expired')",
+                    "notes": "ENUM type"
+                },
+                {
+                    "pg": "plan_name",
+                    "type": "VARCHAR(100)",
+                    "mysql": "varchar(64) (plan)",
+                    "notes": "Renamed from 'plan'"
+                },
+                {
+                    "pg": "amount",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": "MySQL has INT, not DECIMAL"
+                },
+                {
+                    "pg": "currency",
+                    "type": "VARCHAR(3)",
+                    "mysql": "varchar(3)",
+                    "notes": ""
+                },
+                {
+                    "pg": "current_period_start",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime (current_period_started)",
+                    "notes": "Renamed"
+                },
+                {
+                    "pg": "current_period_end",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime (current_period_ends)",
+                    "notes": "Renamed"
+                },
+                {
+                    "pg": "canceled_at",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime (canceled)",
+                    "notes": "Renamed"
+                },
+                {
+                    "pg": "created_at",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime (activated)",
+                    "notes": "Renamed from 'activated'"
+                },
+                {
+                    "pg": "updated_at",
+                    "type": "TIMESTAMP",
+                    "mysql": "timestamp (updated)",
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "number": 6,
+            "name": "payment_transaction_log",
+            "mysqlName": "fc_payment_transaction_log",
+            "columns": [
+                {
+                    "pg": "transaction_id",
+                    "type": "SERIAL",
+                    "mysql": "int auto_inc (id)",
+                    "notes": "Primary key, renamed from 'id'"
+                },
+                {
+                    "pg": "user_id",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": ""
+                },
+                {
+                    "pg": "stripe_charge_id",
+                    "type": "VARCHAR(255)",
+                    "mysql": "varchar(64) (session_trans_id)",
+                    "notes": "Renamed from 'session_trans_id'"
+                },
+                {
+                    "pg": "status",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": "MySQL has INT status, not VARCHAR"
+                },
+                {
+                    "pg": "description",
+                    "type": "TEXT",
+                    "mysql": "text (request)",
+                    "notes": "Renamed from 'request'"
+                },
+                {
+                    "pg": "metadata",
+                    "type": "TEXT",
+                    "mysql": "text (response)",
+                    "notes": "Renamed from 'response', kept as TEXT"
+                },
+                {
+                    "pg": "created_at",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime (created)",
+                    "notes": "Renamed"
+                }
+            ]
+        },
+        {
+            "number": 7,
+            "name": "user_social",
+            "mysqlName": "fc_user_social",
+            "columns": [
+                {
+                    "pg": "user_id",
+                    "type": "INTEGER",
+                    "mysql": "int",
+                    "notes": "Part of composite primary key"
+                },
+                {
+                    "pg": "social_type",
+                    "type": "VARCHAR(16)",
+                    "mysql": "varchar(16)",
+                    "notes": "Part of composite primary key"
+                },
+                {
+                    "pg": "social_id",
+                    "type": "VARCHAR(32)",
+                    "mysql": "varchar(32)",
+                    "notes": "Part of composite primary key"
+                },
+                {
+                    "pg": "converted",
+                    "type": "BOOLEAN",
+                    "mysql": "tinyint(1)",
+                    "notes": "MySQL TINYINT(1) → PostgreSQL BOOLEAN"
+                },
+                {
+                    "pg": "meta",
+                    "type": "TEXT",
+                    "mysql": "text",
+                    "notes": ""
+                },
+                {
+                    "pg": "created",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime",
+                    "notes": ""
+                },
+                {
+                    "pg": "updated",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime",
+                    "notes": ""
+                },
+                {
+                    "pg": "site_id",
+                    "type": "SMALLINT",
+                    "mysql": "smallint",
+                    "notes": "Default 100"
+                }
+            ]
+        },
+        {
+            "number": 8,
+            "name": "users",
+            "mysqlName": "fc_users",
+            "columns": [
+                {
+                    "pg": "user_id",
+                    "type": "SERIAL",
+                    "mysql": "int auto_inc (id)",
+                    "notes": "Primary key, renamed from 'id'"
+                },
+                {
+                    "pg": "username",
+                    "type": "VARCHAR(100)",
+                    "mysql": "varchar(64)",
+                    "notes": ""
+                },
+                {
+                    "pg": "email",
+                    "type": "VARCHAR(255)",
+                    "mysql": "varchar(100)",
+                    "notes": ""
+                },
+                {
+                    "pg": "password_hash",
+                    "type": "TEXT",
+                    "mysql": "varchar(40) (password)",
+                    "notes": "Renamed from 'password'"
+                },
+                {
+                    "pg": "status",
+                    "type": "user_status",
+                    "mysql": "enum('active','inactive','pending','deleted')",
+                    "notes": "ENUM type"
+                },
+                {
+                    "pg": "last_login",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime (last_login_date)",
+                    "notes": "Renamed"
+                },
+                {
+                    "pg": "created_at",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime (date_joined)",
+                    "notes": "Renamed from 'date_joined'"
+                },
+                {
+                    "pg": "updated_at",
+                    "type": "TIMESTAMP",
+                    "mysql": "datetime (updated)",
+                    "notes": ""
+                }
+            ]
+        },
+        {
+            "number": 9,
+            "name": "user_cancellation_reason_log",
+            "mysqlName": "user_cancellation_reason_log",
+            "columns": [
+                {
+                    "pg": "log_id",
+                    "type": "SERIAL",
+                    "mysql": "int auto_inc (logId)",
+                    "notes": "Primary key, camelCase → snake_case"
+                },
+                {
+                    "pg": "user_id",
+                    "type": "INTEGER",
+                    "mysql": "int (userId)",
+                    "notes": "camelCase → snake_case"
+                },
+                {
+                    "pg": "reason_id",
+                    "type": "SMALLINT",
+                    "mysql": "tinyint (reasonId)",
+                    "notes": "Preserved numeric ID, camelCase → snake_case"
+                },
+                {
+                    "pg": "reason_text",
+                    "type": "TEXT",
+                    "mysql": "text (reasonText)",
+                    "notes": "User feedback, camelCase → snake_case"
+                },
+                {
+                    "pg": "created_at",
+                    "type": "TIMESTAMP",
+                    "mysql": "int (createdAt)",
+                    "notes": "Unix timestamp → TIMESTAMP, camelCase → snake_case"
+                }
+            ]
+        }
+    ],
+    "enumTypes": [
+        {
+            "name": "img_ext",
+            "values": [
+                "jpeg",
+                "jpg",
+                "png",
+                "gif"
+            ],
+            "usedBy": [
+                "image.extension"
+            ]
+        },
+        {
+            "name": "img_access",
+            "values": [
+                "private",
+                "public",
+                "inactive",
+                "deleted"
+            ],
+            "usedBy": [
+                "image.access"
+            ]
+        },
+        {
+            "name": "sub_status",
+            "values": [
+                "new",
+                "active",
+                "canceled",
+                "expired"
+            ],
+            "usedBy": [
+                "payment_subscriptions.status"
+            ]
+        },
+        {
+            "name": "user_status",
+            "values": [
+                "active",
+                "inactive",
+                "pending",
+                "deleted"
+            ],
+            "usedBy": [
+                "users.status"
+            ]
+        }
+    ],
+    "summary": {
+        "totalMysqlTables": 11,
+        "totalPostgresTables": 9,
+        "totalMysqlFields": 118,
+        "totalPostgresFields": 85,
+        "fieldsRemoved": 33,
+        "fieldsAdded": 5,
+        "consolidatedTables": {
+            "gaming": {
+                "mysqlTables": [
+                    "fc_jewel_scores",
+                    "fc_stellarspeller_scores",
+                    "fc_jewel_score_totals",
+                    "fc_stellarspeller_score_totals"
+                ],
+                "postgresTables": [
+                    "gaming_scores",
+                    "gaming_totals"
+                ],
+                "discriminator": "game_type"
+            }
+        }
+    }
+}

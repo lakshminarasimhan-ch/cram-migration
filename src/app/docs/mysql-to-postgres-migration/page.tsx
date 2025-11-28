@@ -166,16 +166,13 @@ export default function MySQLToPostgresMigration() {
                     __html: `<span class="k">CREATE TABLE</span> payment_subscriptions (
     subscription_id <span class="k">SERIAL PRIMARY KEY</span>,
     user_id <span class="k">INTEGER</span>,
-    stripe_subscription_id <span class="k">VARCHAR(255)</span>,
+    external_id <span class="k">VARCHAR(255)</span>,
     status <span class="k">sub_status</span>,
-    plan_name <span class="k">VARCHAR(100)</span>,
-    amount <span class="k">NUMERIC(10,2)</span>,
+    plan <span class="k">VARCHAR(100)</span>,
+    amount <span class="k">INTEGER</span>,
     currency <span class="k">VARCHAR(3)</span>,
-    interval <span class="k">VARCHAR(20)</span>,
     current_period_start <span class="k">TIMESTAMP</span>,
     current_period_end <span class="k">TIMESTAMP</span>,
-    trial_start <span class="k">TIMESTAMP</span>,
-    trial_end <span class="k">TIMESTAMP</span>,
     canceled_at <span class="k">TIMESTAMP</span>,
     created_at <span class="k">TIMESTAMP</span>,
     updated_at <span class="k">TIMESTAMP</span>
@@ -197,12 +194,10 @@ export default function MySQLToPostgresMigration() {
                     __html: `<span class="k">CREATE TABLE</span> payment_transaction_log (
     transaction_id <span class="k">SERIAL PRIMARY KEY</span>,
     user_id <span class="k">INTEGER</span>,
-    stripe_charge_id <span class="k">VARCHAR(255)</span>,
-    amount <span class="k">NUMERIC(10,2)</span>,
-    currency <span class="k">VARCHAR(3)</span>,
-    status <span class="k">VARCHAR(50)</span>,
-    description <span class="k">TEXT</span>,
-    metadata <span class="k">JSONB</span>,
+    session_trans_id <span class="k">VARCHAR(255)</span>,
+    status <span class="k">INTEGER</span>,
+    request <span class="k">TEXT</span>,
+    response <span class="k">TEXT</span>,
     created_at <span class="k">TIMESTAMP</span>
 );
 
@@ -250,17 +245,8 @@ export default function MySQLToPostgresMigration() {
     user_id <span class="k">SERIAL PRIMARY KEY</span>,
     username <span class="k">VARCHAR(100)</span>,
     email <span class="k">VARCHAR(255)</span>,
-    password_hash <span class="k">TEXT</span>,
+    password_hash <span class="k">VARCHAR(255)</span>,
     status <span class="k">user_status</span>,
-    first_name <span class="k">VARCHAR(100)</span>,
-    last_name <span class="k">VARCHAR(100)</span>,
-    display_name <span class="k">VARCHAR(200)</span>,
-    bio <span class="k">TEXT</span>,
-    avatar_url <span class="k">VARCHAR(500)</span>,
-    website <span class="k">VARCHAR(255)</span>,
-    timezone <span class="k">VARCHAR(50)</span>,
-    language <span class="k">VARCHAR(5)</span>,
-    email_verified <span class="k">BOOLEAN</span>,
     last_login <span class="k">TIMESTAMP</span>,
     created_at <span class="k">TIMESTAMP</span>,
     updated_at <span class="k">TIMESTAMP</span>
@@ -283,8 +269,8 @@ export default function MySQLToPostgresMigration() {
                     __html: `<span class="k">CREATE TABLE</span> user_cancellation_reason_log (
     log_id <span class="k">SERIAL PRIMARY KEY</span>,
     user_id <span class="k">INTEGER</span>,
-    reason <span class="k">VARCHAR(255)</span>,
-    additional_feedback <span class="k">TEXT</span>,
+    reason_id <span class="k">SMALLINT</span>,
+    reason_text <span class="k">TEXT</span>,
     created_at <span class="k">TIMESTAMP</span>
 );
 
