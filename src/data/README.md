@@ -5,7 +5,7 @@
 ```
 /src/data/
 ├── dms/
-│   └── dms-mysql-to-postgres-staging.json    # AWS DMS table mapping rules
+│   └── dms-mysql-to-postgres-mysql-dump.json    # AWS DMS table mapping rules
 ├── migration/
 │   ├── pre-migration-setup.sql               # Run BEFORE DMS migration
 │   └── post-migration-transform.sql          # Run AFTER DMS migration
@@ -24,47 +24,47 @@ psql -h postgres-host -U postgres -d flashcards \
   -f migration/pre-migration-setup.sql
 ```
 
-Creates `staging` schema and sets permissions.
+Creates `mysql_dump` schema and sets permissions.
 
 ### Step 2: AWS DMS Migration (1-2 hours)
 
 **AWS Console:**
 1. DMS → Database migration tasks → Create task
-2. Task identifier: `flashcards-mysql-to-staging`
+2. Task identifier: `flashcards-mysql-to-mysql-dump`
 3. Migration type: **Migrate existing data**
-4. Table mappings → JSON editor → Paste contents of `dms/dms-mysql-to-postgres-staging.json`
+4. Table mappings → JSON editor → Paste contents of `dms/dms-mysql-to-postgres-mysql-dump.json`
 5. Start task
 
 **AWS CLI:**
 ```bash
 aws dms create-replication-task \
-  --replication-task-identifier flashcards-mysql-to-staging \
+  --replication-task-identifier flashcards-mysql-to-mysql-dump \
   --source-endpoint-arn arn:aws:dms:...:endpoint:mysql-source \
   --target-endpoint-arn arn:aws:dms:...:endpoint:postgres-target \
   --replication-instance-arn arn:aws:dms:...:rep:instance \
   --migration-type full-load \
-  --table-mappings file://dms/dms-mysql-to-postgres-staging.json
+  --table-mappings file://dms/dms-mysql-to-postgres-mysql-dump.json
 ```
 
-### Step 3: Validate Staging (5 minutes)
+### Step 3: Validate mysql_dump (5 minutes)
 
 ```sql
 -- Check all tables exist
 SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'staging' ORDER BY table_name;
+WHERE table_schema = 'mysql_dump' ORDER BY table_name;
 
 -- Check row counts
-SELECT 'fc_categories' AS table, COUNT(*) FROM staging.fc_categories
-UNION ALL SELECT 'fc_image', COUNT(*) FROM staging.fc_image
-UNION ALL SELECT 'fc_jewel_scores', COUNT(*) FROM staging.fc_jewel_scores
-UNION ALL SELECT 'fc_jewel_score_totals', COUNT(*) FROM staging.fc_jewel_score_totals
-UNION ALL SELECT 'fc_stellarspeller_scores', COUNT(*) FROM staging.fc_stellarspeller_scores
-UNION ALL SELECT 'fc_stellarspeller_score_totals', COUNT(*) FROM staging.fc_stellarspeller_score_totals
-UNION ALL SELECT 'fc_payment_subscriptions', COUNT(*) FROM staging.fc_payment_subscriptions
-UNION ALL SELECT 'fc_payment_transaction_log', COUNT(*) FROM staging.fc_payment_transaction_log
-UNION ALL SELECT 'fc_user_social', COUNT(*) FROM staging.fc_user_social
-UNION ALL SELECT 'fc_users', COUNT(*) FROM staging.fc_users
-UNION ALL SELECT 'user_cancellation_reason_log', COUNT(*) FROM staging.user_cancellation_reason_log;
+SELECT 'fc_categories' AS table, COUNT(*) FROM mysql_dump.fc_categories
+UNION ALL SELECT 'fc_image', COUNT(*) FROM mysql_dump.fc_image
+UNION ALL SELECT 'fc_jewel_scores', COUNT(*) FROM mysql_dump.fc_jewel_scores
+UNION ALL SELECT 'fc_jewel_score_totals', COUNT(*) FROM mysql_dump.fc_jewel_score_totals
+UNION ALL SELECT 'fc_stellarspeller_scores', COUNT(*) FROM mysql_dump.fc_stellarspeller_scores
+UNION ALL SELECT 'fc_stellarspeller_score_totals', COUNT(*) FROM mysql_dump.fc_stellarspeller_score_totals
+UNION ALL SELECT 'fc_payment_subscriptions', COUNT(*) FROM mysql_dump.fc_payment_subscriptions
+UNION ALL SELECT 'fc_payment_transaction_log', COUNT(*) FROM mysql_dump.fc_payment_transaction_log
+UNION ALL SELECT 'fc_user_social', COUNT(*) FROM mysql_dump.fc_user_social
+UNION ALL SELECT 'fc_users', COUNT(*) FROM mysql_dump.fc_users
+UNION ALL SELECT 'user_cancellation_reason_log', COUNT(*) FROM mysql_dump.user_cancellation_reason_log;
 ```
 
 ### Step 4: Transform to Production (15-30 minutes)
@@ -77,7 +77,7 @@ psql -h postgres-host -U postgres -d flashcards \
 **What it does:**
 - Creates ENUM types (4 types)
 - Creates production tables (9 tables)
-- Transforms and loads data from staging
+- Transforms and loads data from mysql_dump
 - Consolidates gaming tables (4 → 2)
 - Creates indexes (12 indexes)
 - Adds foreign keys (4 constraints)
@@ -131,7 +131,7 @@ The script outputs validation results automatically. Look for ✓ or ✗ for eac
 
 **What it does:**
 - Selects 11 tables for migration
-- Moves all tables to `staging` schema
+- Moves all tables to `mysql_dump` schema
 - Excludes 33 legacy tables
 
 ### `/migration/pre-migration-setup.sql`
@@ -141,7 +141,7 @@ The script outputs validation results automatically. Look for ✓ or ✗ for eac
 **Run**: BEFORE DMS migration
 
 **What it does:**
-- Creates `staging` schema
+- Creates `mysql_dump` schema
 - Grants DMS user permissions
 
 ### `/migration/post-migration-transform.sql`
@@ -153,7 +153,7 @@ The script outputs validation results automatically. Look for ✓ or ✗ for eac
 **What it does:**
 - Phase 1: Creates ENUM types (4 types)
 - Phase 2: Creates target tables (9 tables)
-- Phase 3: Transforms and loads data from staging
+- Phase 3: Transforms and loads data from mysql_dump
 - Phase 4: Creates indexes (12 indexes)
 - Phase 5: Adds foreign keys (4 constraints)
 - Phase 6: Creates triggers (2 triggers)
@@ -211,7 +211,7 @@ const enumTypes = schemaMapping.enumTypes;
 
 The transformation script automatically validates:
 
-- ✓ Row counts match (staging vs production)
+- ✓ Row counts match (mysql_dump vs production)
 - ✓ Gaming scores consolidated correctly
 - ✓ Gaming totals consolidated correctly
 - ✓ Game type distribution (jewel vs stellarspeller)
@@ -236,20 +236,20 @@ gaming_scores               10000    10000       ✓
 
 **Solution**:
 ```sql
-CREATE SCHEMA IF NOT EXISTS staging;
-GRANT ALL ON SCHEMA staging TO dms_user;
+CREATE SCHEMA IF NOT EXISTS mysql_dump;
+GRANT ALL ON SCHEMA mysql_dump TO dms_user;
 ```
 
 ### Transformation Fails
 
 **Error**: Type "img_ext" does not exist
 
-**Solution**: Check ENUM values in staging match PostgreSQL definitions:
+**Solution**: Check ENUM values in mysql_dump match PostgreSQL definitions:
 ```sql
-SELECT DISTINCT extension FROM staging.fc_image;
-SELECT DISTINCT access FROM staging.fc_image;
-SELECT DISTINCT status FROM staging.fc_payment_subscriptions;
-SELECT DISTINCT status FROM staging.fc_users;
+SELECT DISTINCT extension FROM mysql_dump.fc_image;
+SELECT DISTINCT access FROM mysql_dump.fc_image;
+SELECT DISTINCT status FROM mysql_dump.fc_payment_subscriptions;
+SELECT DISTINCT status FROM mysql_dump.fc_users;
 ```
 
 ### Row Count Mismatch
@@ -258,12 +258,12 @@ SELECT DISTINCT status FROM staging.fc_users;
 ```sql
 -- Check for duplicates
 SELECT set_id, user_id, COUNT(*) 
-FROM staging.fc_jewel_scores 
+FROM mysql_dump.fc_jewel_scores 
 GROUP BY set_id, user_id 
 HAVING COUNT(*) > 1;
 
 -- Check for NULLs
-SELECT COUNT(*) FROM staging.fc_users WHERE email IS NULL;
+SELECT COUNT(*) FROM mysql_dump.fc_users WHERE email IS NULL;
 ```
 
 ---
@@ -272,13 +272,13 @@ SELECT COUNT(*) FROM staging.fc_users WHERE email IS NULL;
 
 After successful migration and thorough testing:
 
-### Option 1: Keep Staging (Recommended)
-Keep staging schema as backup/reference. Minimal storage cost.
+### Option 1: Keep mysql_dump (Recommended)
+Keep mysql_dump schema as backup/reference. Minimal storage cost.
 
-### Option 2: Drop Staging
+### Option 2: Drop mysql_dump
 ```sql
 -- Only after extensive testing!
-DROP SCHEMA staging CASCADE;
+DROP SCHEMA mysql_dump CASCADE;
 VACUUM FULL;
 ```
 
@@ -288,27 +288,27 @@ VACUUM FULL;
 
 ### Two-Stage Migration Benefits
 
-1. ✅ **Safer**: Original MySQL data preserved in staging
+1. ✅ **Safer**: Original MySQL data preserved in mysql_dump
 2. ✅ **Simpler DMS**: Just copy tables (13 rules vs 64 rules)
 3. ✅ **All tables via DMS**: Including gaming tables (no manual migration)
 4. ✅ **Flexible**: PostgreSQL transformations more powerful than DMS
-5. ✅ **Testable**: Validate staging before production
+5. ✅ **Testable**: Validate mysql_dump before production
 6. ✅ **Rollback**: Easy - just re-run transformation script
 
-### What's in Staging Schema
+### What's in mysql_dump Schema
 
 Exact copy of MySQL tables:
-- `staging.fc_categories`
-- `staging.fc_image`
-- `staging.fc_jewel_scores`
-- `staging.fc_jewel_score_totals`
-- `staging.fc_stellarspeller_scores`
-- `staging.fc_stellarspeller_score_totals`
-- `staging.fc_payment_subscriptions`
-- `staging.fc_payment_transaction_log`
-- `staging.fc_user_social`
-- `staging.fc_users`
-- `staging.user_cancellation_reason_log`
+- `mysql_dump.fc_categories`
+- `mysql_dump.fc_image`
+- `mysql_dump.fc_jewel_scores`
+- `mysql_dump.fc_jewel_score_totals`
+- `mysql_dump.fc_stellarspeller_scores`
+- `mysql_dump.fc_stellarspeller_score_totals`
+- `mysql_dump.fc_payment_subscriptions`
+- `mysql_dump.fc_payment_transaction_log`
+- `mysql_dump.fc_user_social`
+- `mysql_dump.fc_users`
+- `mysql_dump.user_cancellation_reason_log`
 
 ### What's in Production Schema
 
@@ -351,11 +351,11 @@ Edit `migration/post-migration-transform.sql`:
 ## 🎯 Summary
 
 **This package provides:**
-1. ✅ Simplified DMS migration (all tables to staging)
-2. ✅ Powerful PostgreSQL transformations (staging to production)
+1. ✅ Simplified DMS migration (all tables to mysql_dump)
+2. ✅ Powerful PostgreSQL transformations (mysql_dump to production)
 3. ✅ Complete automation (2 SQL scripts + 1 DMS task)
 4. ✅ Built-in validation (automatic checks)
-5. ✅ Safe rollback (staging preserved)
+5. ✅ Safe rollback (mysql_dump preserved)
 
 **Total effort**: 2-3 hours, mostly automated  
 **Total cost**: ~$0.30 (DMS instance)  

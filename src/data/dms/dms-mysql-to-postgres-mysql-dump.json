@@ -113,13 +113,13 @@
         {
             "rule-type": "transformation",
             "rule-id": "12",
-            "rule-name": "move-all-tables-to-staging-schema",
+            "rule-name": "move-all-tables-to-mysql-dump-schema",
             "rule-target": "schema",
             "object-locator": {
                 "schema-name": "%"
             },
             "rule-action": "rename",
-            "value": "staging"
+            "value": "mysql_dump"
         },
         {
             "rule-type": "selection",

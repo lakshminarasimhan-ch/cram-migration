@@ -1,12 +1,12 @@
 -- ============================================================================
--- POST-MIGRATION TRANSFORMATION: staging → public (or cram)
+-- POST-MIGRATION TRANSFORMATION: mysql_dump → public (or cram)
 -- ============================================================================
 -- Run this AFTER AWS DMS migration completes
 --
 -- This script:
 -- 1. Creates ENUM types
 -- 2. Creates final table schemas (9 tables)
--- 3. Transforms and loads data from staging
+-- 3. Transforms and loads data from mysql_dump
 -- 4. Consolidates gaming tables (4 → 2)
 -- 5. Creates indexes, foreign keys, triggers
 -- 6. Resets sequences
@@ -151,26 +151,26 @@ CREATE TABLE user_cancellation_reason_log (
 -- Categories (simple copy)
 INSERT INTO categories (category_id, site_id, parent, slug, title, count)
 SELECT category_id, site_id, parent, slug, title, count
-FROM staging.fc_categories;
+FROM mysql_dump.fc_categories;
 
 -- Image (with ENUM casting)
 INSERT INTO image (image_id, title, src, extension, hash, provider, description, access, meta, creator_id, created)
 SELECT 
     image_id, title, src, extension::img_ext, hash, provider, 
     description, access::img_access, meta, creator_id, created
-FROM staging.fc_image;
+FROM mysql_dump.fc_image;
 
 -- Gaming Totals (consolidate jewel + stellarspeller)
 INSERT INTO gaming_totals (set_id, game_type, num_scores, sum_scores)
-SELECT set_id, 'jewel', num_scores, sum_scores FROM staging.fc_jewel_score_totals
+SELECT set_id, 'jewel', num_scores, sum_scores FROM mysql_dump.fc_jewel_score_totals
 UNION ALL
-SELECT set_id, 'stellarspeller', num_scores, sum_scores FROM staging.fc_stellarspeller_score_totals;
+SELECT set_id, 'stellarspeller', num_scores, sum_scores FROM mysql_dump.fc_stellarspeller_score_totals;
 
 -- Gaming Scores (consolidate jewel + stellarspeller)
 INSERT INTO gaming_scores (game_type, score, name, accuracy, user_id, created, set_id, time)
-SELECT 'jewel', score, name, accuracy, user_id, created, set_id, time FROM staging.fc_jewel_scores
+SELECT 'jewel', score, name, accuracy, user_id, created, set_id, time FROM mysql_dump.fc_jewel_scores
 UNION ALL
-SELECT 'stellarspeller', score, name, accuracy, user_id, created, set_id, time FROM staging.fc_stellarspeller_scores;
+SELECT 'stellarspeller', score, name, accuracy, user_id, created, set_id, time FROM mysql_dump.fc_stellarspeller_scores;
 
 -- Payment Subscriptions (transform - only use fields that exist in MySQL)
 INSERT INTO payment_subscriptions (
@@ -182,7 +182,7 @@ SELECT
     id, user_id, external_id, status::sub_status, plan,
     amount, currency, current_period_started, current_period_ends,
     canceled, activated, updated
-FROM staging.fc_payment_subscriptions;
+FROM mysql_dump.fc_payment_subscriptions;
 
 -- Payment Transaction Log (only use fields that exist in MySQL)
 INSERT INTO payment_transaction_log (
@@ -190,7 +190,7 @@ INSERT INTO payment_transaction_log (
 )
 SELECT 
     id, user_id, session_trans_id, status, request, response, created
-FROM staging.fc_payment_transaction_log;
+FROM mysql_dump.fc_payment_transaction_log;
 
 -- User Social (simple copy with boolean conversion)
 INSERT INTO user_social (user_id, social_type, social_id, converted, meta, created, updated, site_id)
@@ -198,7 +198,7 @@ SELECT
     user_id, social_type, social_id, 
     CASE WHEN converted = 1 THEN true ELSE false END,
     meta, created, updated, site_id
-FROM staging.fc_user_social;
+FROM mysql_dump.fc_user_social;
 
 -- Users (only use fields that exist in MySQL)
 INSERT INTO users (
@@ -208,7 +208,7 @@ INSERT INTO users (
 SELECT 
     id, username, email, password, status::user_status,
     last_login_date, date_joined, updated
-FROM staging.fc_users;
+FROM mysql_dump.fc_users;
 
 -- User Cancellation Reason Log (camelCase to snake_case)
 INSERT INTO user_cancellation_reason_log (log_id, user_id, reason_id, reason_text, created_at)
@@ -218,7 +218,7 @@ SELECT
     "reasonId"::smallint, -- Keep as numeric (tinyint -> smallint)
     "reasonText",         -- Maps to reason_text
     to_timestamp("createdAt")
-FROM staging.user_cancellation_reason_log;
+FROM mysql_dump.user_cancellation_reason_log;
 
 -- ============================================================================
 -- PHASE 4: Create Indexes
@@ -298,57 +298,57 @@ SELECT setval('user_cancellation_reason_log_log_id_seq', (SELECT MAX(log_id) FRO
 
 \echo 'Row Count Validation:'
 SELECT 'categories' AS table_name, 
-       (SELECT COUNT(*) FROM staging.fc_categories) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.fc_categories) AS mysql_dump,
        (SELECT COUNT(*) FROM categories) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.fc_categories) = (SELECT COUNT(*) FROM categories) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.fc_categories) = (SELECT COUNT(*) FROM categories) 
             THEN '✓' ELSE '✗' END AS match;
 
 SELECT 'image' AS table_name,
-       (SELECT COUNT(*) FROM staging.fc_image) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.fc_image) AS mysql_dump,
        (SELECT COUNT(*) FROM image) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.fc_image) = (SELECT COUNT(*) FROM image) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.fc_image) = (SELECT COUNT(*) FROM image) 
             THEN '✓' ELSE '✗' END AS match;
 
 SELECT 'gaming_scores' AS table_name,
-       (SELECT COUNT(*) FROM staging.fc_jewel_scores) + (SELECT COUNT(*) FROM staging.fc_stellarspeller_scores) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.fc_jewel_scores) + (SELECT COUNT(*) FROM mysql_dump.fc_stellarspeller_scores) AS mysql_dump,
        (SELECT COUNT(*) FROM gaming_scores) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.fc_jewel_scores) + (SELECT COUNT(*) FROM staging.fc_stellarspeller_scores) = (SELECT COUNT(*) FROM gaming_scores) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.fc_jewel_scores) + (SELECT COUNT(*) FROM mysql_dump.fc_stellarspeller_scores) = (SELECT COUNT(*) FROM gaming_scores) 
             THEN '✓' ELSE '✗' END AS match;
 
 SELECT 'gaming_totals' AS table_name,
-       (SELECT COUNT(*) FROM staging.fc_jewel_score_totals) + (SELECT COUNT(*) FROM staging.fc_stellarspeller_score_totals) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.fc_jewel_score_totals) + (SELECT COUNT(*) FROM mysql_dump.fc_stellarspeller_score_totals) AS mysql_dump,
        (SELECT COUNT(*) FROM gaming_totals) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.fc_jewel_score_totals) + (SELECT COUNT(*) FROM staging.fc_stellarspeller_score_totals) = (SELECT COUNT(*) FROM gaming_totals) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.fc_jewel_score_totals) + (SELECT COUNT(*) FROM mysql_dump.fc_stellarspeller_score_totals) = (SELECT COUNT(*) FROM gaming_totals) 
             THEN '✓' ELSE '✗' END AS match;
 
 SELECT 'payment_subscriptions' AS table_name,
-       (SELECT COUNT(*) FROM staging.fc_payment_subscriptions) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.fc_payment_subscriptions) AS mysql_dump,
        (SELECT COUNT(*) FROM payment_subscriptions) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.fc_payment_subscriptions) = (SELECT COUNT(*) FROM payment_subscriptions) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.fc_payment_subscriptions) = (SELECT COUNT(*) FROM payment_subscriptions) 
             THEN '✓' ELSE '✗' END AS match;
 
 SELECT 'payment_transaction_log' AS table_name,
-       (SELECT COUNT(*) FROM staging.fc_payment_transaction_log) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.fc_payment_transaction_log) AS mysql_dump,
        (SELECT COUNT(*) FROM payment_transaction_log) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.fc_payment_transaction_log) = (SELECT COUNT(*) FROM payment_transaction_log) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.fc_payment_transaction_log) = (SELECT COUNT(*) FROM payment_transaction_log) 
             THEN '✓' ELSE '✗' END AS match;
 
 SELECT 'user_social' AS table_name,
-       (SELECT COUNT(*) FROM staging.fc_user_social) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.fc_user_social) AS mysql_dump,
        (SELECT COUNT(*) FROM user_social) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.fc_user_social) = (SELECT COUNT(*) FROM user_social) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.fc_user_social) = (SELECT COUNT(*) FROM user_social) 
             THEN '✓' ELSE '✗' END AS match;
 
 SELECT 'users' AS table_name,
-       (SELECT COUNT(*) FROM staging.fc_users) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.fc_users) AS mysql_dump,
        (SELECT COUNT(*) FROM users) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.fc_users) = (SELECT COUNT(*) FROM users) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.fc_users) = (SELECT COUNT(*) FROM users) 
             THEN '✓' ELSE '✗' END AS match;
 
 SELECT 'user_cancellation_reason_log' AS table_name,
-       (SELECT COUNT(*) FROM staging.user_cancellation_reason_log) AS staging,
+       (SELECT COUNT(*) FROM mysql_dump.user_cancellation_reason_log) AS mysql_dump,
        (SELECT COUNT(*) FROM user_cancellation_reason_log) AS production,
-       CASE WHEN (SELECT COUNT(*) FROM staging.user_cancellation_reason_log) = (SELECT COUNT(*) FROM user_cancellation_reason_log) 
+       CASE WHEN (SELECT COUNT(*) FROM mysql_dump.user_cancellation_reason_log) = (SELECT COUNT(*) FROM user_cancellation_reason_log) 
             THEN '✓' ELSE '✗' END AS match;
 
 \echo ''
@@ -366,10 +366,10 @@ SELECT game_type, COUNT(*) AS count FROM gaming_totals GROUP BY game_type ORDER 
 SELECT '
 ╔════════════════════════════════════════════════════════════════════════╗
 ║                                                                        ║
-║  ✓ TRANSFORMATION COMPLETE: staging → ' || :'target_schema' || '                         ║
+║  ✓ TRANSFORMATION COMPLETE: mysql_dump → ' || :'target_schema' || '                      ║
 ║                                                                        ║
 ║  Created:        9 tables                                             ║
-║  Migrated:       11 staging tables → 9 production tables              ║
+║  Migrated:       11 mysql_dump tables → 9 production tables           ║
 ║  Indexes:        12                                                   ║
 ║  Foreign Keys:   4                                                    ║
 ║  Triggers:       2                                                    ║
@@ -377,7 +377,7 @@ SELECT '
 ║  Review validation results above.                                     ║
 ║  If all checks pass (✓), migration is successful!                     ║
 ║                                                                        ║
-║  Optional: DROP SCHEMA staging CASCADE; (after thorough testing)      ║
+║  Optional: DROP SCHEMA mysql_dump CASCADE; (after thorough testing)   ║
 ║                                                                        ║
 ╚════════════════════════════════════════════════════════════════════════╝
 ' AS status;
